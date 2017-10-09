@@ -1,0 +1,23 @@
+{
+  "name": "vatron",
+  "version": "1.0.0",
+  "description": "An open source, fast, and accessible VATSIM radar client built with Electron",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/andrewward2001/vatron.git"
+  },
+  "author": "Andrew Ward",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/andrewward2001/vatron/issues"
+  },
+  "homepage": "https://gitlab.com/andrewward2001/vatron#README",
+  "devDependencies": {
+    "electron": "1.7.8"
+  }
+}
