@@ -18,6 +18,13 @@
   },
   "homepage": "https://gitlab.com/andrewward2001/vatron#README",
   "devDependencies": {
-    "electron": "1.7.8"
+    "electron": "1.7.8",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta",
+    "jquery": "^3.2.1",
+    "popper.js": "^1.12.5"
   }
 }
