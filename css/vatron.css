@@ -10,6 +10,15 @@ html, body {
   height: calc(100% - 56px);
 }
 
+nav {
+  -webkit-app-region: drag;
+}
+
+nav button,
+nav a {
+  -webkit-app-region: no-drag;
+}
+
 .navbar-nav {
   width: 100%;
 }
