@@ -115,3 +115,18 @@ function placeMarkers() {
 $("#quit").on('click', () => {
   remote.getCurrentWindow().close()
 })
+
+var maxed = false;
+$("#maximize").on('click', () => {
+  if(maxed == false) {
+    maxed = true
+    remote.getCurrentWindow().maximize()
+  } else {
+    maxed = false
+    remote.getCurrentWindow().unmaximize()
+  }
+})
+
+$("#minimize").on('click', () => {
+  remote.getCurrentWindow().minimize()
+})
