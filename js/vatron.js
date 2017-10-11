@@ -1,4 +1,5 @@
 const path = require('path')
+const remote = require('electron').remote
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -110,3 +111,7 @@ function placeMarkers() {
     })
   })
 }
+
+$("#quit").on('click', () => {
+  remote.getCurrentWindow().close()
+})
