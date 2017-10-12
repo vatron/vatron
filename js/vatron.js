@@ -1,5 +1,5 @@
 const path = require('path')
-const remote = require('electron').remote
+const {remote, shell} = require('electron')
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -9,6 +9,29 @@ var vatsimDataServers = [
   'http://wazzup.flightoperationssystem.com/vatsim/vatsim-data.txt'
 ]
 var vatsimClients = []
+
+var firMappings = {
+  'ABQ': 'kzab',
+  'CHI': 'kzau',
+  'BOS': 'kzbw',
+  'DC': 'kzdc',
+  'DEN': 'kzdv',
+  'FTW': 'kzfw',
+  'HOU': 'kzhu',
+  'IND': 'kzid',
+  'JAX': 'kzjx',
+  'KC': 'kzkc',
+  'LAX': 'kzla',
+  'SLC': 'kzlc',
+  'MIA': 'kzma',
+  'MEM': 'kzme',
+  'MSP': 'kzmp',
+  'OAK': 'kzoa',
+  'CLE': 'kzob',
+  'SEA': 'kzse',
+  'ATL': 'kztl',
+  'NY': 'kzwy'
+}
 
 // wait for the application to load before trying to do things
 $(document).ready(function() {
@@ -24,7 +47,88 @@ function initialize() {
     center: {lat: 15, lng: 0},
     zoom: 2,
     mapTypeControl: false,
-    streetViewControl: false
+    streetViewControl: false,
+    styles: [
+      // style from https://developers.google.com/maps/documentation/javascript/examples/style-array
+      {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+      {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+      {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+      {
+        featureType: 'administrative.locality',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#d59563'}]
+      },
+      {
+        featureType: 'poi',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#d59563'}]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'geometry',
+        stylers: [{color: '#263c3f'}]
+      },
+      {
+        featureType: 'poi.park',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#6b9a76'}]
+      },
+      {
+        featureType: 'road',
+        elementType: 'geometry',
+        stylers: [{color: '#38414e'}]
+      },
+      {
+        featureType: 'road',
+        elementType: 'geometry.stroke',
+        stylers: [{color: '#212a37'}]
+      },
+      {
+        featureType: 'road',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#9ca5b3'}]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'geometry',
+        stylers: [{color: '#746855'}]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'geometry.stroke',
+        stylers: [{color: '#1f2835'}]
+      },
+      {
+        featureType: 'road.highway',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#f3d19c'}]
+      },
+      {
+        featureType: 'transit',
+        elementType: 'geometry',
+        stylers: [{color: '#2f3948'}]
+      },
+      {
+        featureType: 'transit.station',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#d59563'}]
+      },
+      {
+        featureType: 'water',
+        elementType: 'geometry',
+        stylers: [{color: '#17263c'}]
+      },
+      {
+        featureType: 'water',
+        elementType: 'labels.text.fill',
+        stylers: [{color: '#515c6d'}]
+      },
+      {
+        featureType: 'water',
+        elementType: 'labels.text.stroke',
+        stylers: [{color: '#17263c'}]
+      }
+    ]
   })
 
 }
@@ -65,6 +169,7 @@ function loadData() {
           cid: clientSplit[1],
           name: clientSplit[2],
           clientType: clientSplit[3],
+          frequency: clientSplit[4],
           lat: clientSplit[5],
           lng: clientSplit[6],
           altitude: clientSplit[7],
@@ -91,6 +196,7 @@ function loadData() {
             lat: clientSplit[33],
             lng: clientSplit[34]
           },
+          atis: clientSplit[35],
           timeLogon: clientSplit[37],
           heading: clientSplit[38]
         }
@@ -103,14 +209,191 @@ function loadData() {
 }
 
 function placeMarkers() {
-  vatsimClients.forEach(function(client) {
-    var marker = new google.maps.Marker({
-      position: new google.maps.LatLng(client.lat, client.lng),
-      icon: path.join(__dirname, 'icons/plane_shadowed.svg'),
-      map: map
-    })
+  vatsimClients.forEach(function(client, index) {
+    if(client.clientType == "PILOT") {
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(client.lat, client.lng),
+        icon: planeSVG(client.heading),
+        map: map
+      })
+      marker.addListener('click', function() { onOpenPilotInfo(index, marker) }) // breaks if you pass addListener the onOpenInfo function directly
+    }
+
+    if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
+      var nameSplit = client.callsign.split("_")
+      if(firMappings.hasOwnProperty(nameSplit[0])) {
+        $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
+          json.features[0].properties.callsign = client.callsign
+          console.log(json.features[0].properties)
+          map.data.addGeoJson(json)
+          map.data.addListener('click', function(e) { onOpenAtcInfo(index, e.feature.getProperty('callsign')) })
+        })
+      //  map.data.addListener('click', function() { onOpenAtcInfo(index) })
+      //  google.maps.event.addListener(thisFIR, 'click', function() { onOpenAtcInfo(index) })
+      }
+    }
   })
 }
+
+function planeSVG(rotationDeg) {
+  return {
+    path: 'M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',
+    strokeColor: '#CCC',
+    fillColor: '#EEE',
+    fillOpacity: 1,
+    'rotation': parseInt(rotationDeg)
+  }
+}
+
+var isAlreadyOpen = false;
+function onOpenPilotInfo(i) {
+  if(!isAlreadyOpen){
+    isAlreadyOpen = true
+    var c = vatsimClients[i]
+    var name = c.name.split(' ')
+    $('.row.fluid').prepend(`
+      <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
+        <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9932;</a>
+        <h4 class="mb-4 mt-1">Flight Info</h4>
+        <div class="card mb-3 bg-dark">
+          <div class="card-body">
+            <h4 class="card-title">${c.callsign}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">${name[0]} ${name[1]} (${name[2]}, ${c.cid})</h6>
+            <div class="card-text d-flex justify-content-spc"><h5>${c.depApt}</h5><h5>&rarr;</h5><h5>${c.arrApt}</h5></div>
+          </div>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td colspan="2">
+                  <span class="text-muted">Aboard</span><br>
+                  <span>${c.aircraft}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="text-muted">Altitude</span><br>
+                  <span>${c.altitude}</span>
+                </td>
+                <td>
+                  <span class="text-muted">Planned Altitude</span><br>
+                  <span>${c.plnAltitude}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="text-muted">Ground Speed</span><br>
+                  <span>${c.groundspeed}</span>
+                </td>
+                <td>
+                  <span class="text-muted">Planned TAS</span><br>
+                  <span>${c.tas}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="text-muted">Latitude</span><br>
+                  <span>${c.lat}</span>
+                </td>
+                <td>
+                  <span class="text-muted">Longitude</span><br>
+                  <span>${c.lng}</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="text-muted">Heading</span><br>
+                  <span>${c.heading}</span>
+                </td>
+                <td>
+                  <span class="text-muted">Squawk</span><br>
+                  <span>${c.xpdr}</span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <span class="text-muted">Planned Route</span><br>
+                  <span>${c.route}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-body pt-0">
+            <a href="https://stats.vatsim.net/search_id.php?id=${c.cid}" class="card-link">View Stats</a>
+          </div>
+        </div>
+      </div>
+    `)
+    $('#map').toggleClass('col-6 col-md-8 col-xl-9')
+  } else {
+    // resets window and calls the function again
+    closeInfo()
+    onOpenPilotInfo(i)
+  }
+}
+
+function onOpenAtcInfo(i, n) {
+  if(!isAlreadyOpen){
+    isAlreadyOpen = true
+    var c = vatsimClients.find(function(element) {
+      return element.callsign == n
+    })
+    var name = c.name.split(' ')
+    var splitAtis = c.atis.split('^�')
+    var finalAtis = ""
+    for(var i = 0; i < splitAtis.length; i++) {
+      finalAtis += '<p class="atis">' + splitAtis[i] + '</p>'
+    }
+    console.log(c.atis)
+    console.log(splitAtis)
+    $('.row.fluid').prepend(`
+      <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
+        <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9932;</a>
+        <h4 class="mb-4 mt-1">Flight Info</h4>
+        <div class="card mb-3 bg-dark">
+          <div class="card-body">
+            <h4 class="card-title">${c.callsign}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">${name[0]} ${name[1]} (${c.cid})</h6>
+            <h5 class="card-text">${c.frequency}</h5>
+          </div>
+          <table class="table">
+            <tbody>
+              <tr>
+                <td colspan="2">
+                  <span class="text-muted">ATIS Message</span><br>
+                  <span>${finalAtis}</span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <span class="text-muted">Time online</span><br>
+                  <span>Online since ${c.timeLogon.substring(8, 10) + ':' + c.timeLogon.substring(10, 12)}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="card-body pt-0">
+            <a href="https://stats.vatsim.net/search_id.php?id=${c.cid}" class="card-link">View Stats</a>
+          </div>
+        </div>
+      </div>
+    `)
+    $('#map').toggleClass('col-6 col-md-8 col-xl-9')
+  } else {
+    // resets window and calls the function again
+    closeInfo()
+    onOpenAtcInfo(i, n)
+  }
+}
+
+function closeInfo() {
+  isAlreadyOpen = false
+  $('#fltInfo').remove()
+  $('#map').toggleClass('col-6 col-md-8 col-xl-9')
+}
+
+$(document).on('click', '#closeFltInfo', () => {
+  closeInfo()
+})
 
 $("#quit").on('click', () => {
   remote.getCurrentWindow().close()
@@ -118,7 +401,7 @@ $("#quit").on('click', () => {
 
 var maxed = false;
 $("#maximize").on('click', () => {
-  if(maxed == false) {
+  if(!maxed) {
     maxed = true
     remote.getCurrentWindow().maximize()
   } else {
@@ -129,4 +412,9 @@ $("#maximize").on('click', () => {
 
 $("#minimize").on('click', () => {
   remote.getCurrentWindow().minimize()
+})
+
+$(document).on('click', 'a[href^="https"]', function(e) {
+  e.preventDefault()
+  shell.openExternal(this.href)
 })
