@@ -1,5 +1,13 @@
 const path = require('path')
 const {remote, shell} = require('electron')
+const Store = require('./js/store.js')
+const Friends = require('./js/friends.js')
+const InfoPane = require('./js/infopane.js')
+
+// turns out #9932 is incompatible with macOS, this fixes that for that platform only.
+if(process.platform == "darwin") {
+  $('#quit, #closeFltInfo').html('&#10540;')
+}
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -9,35 +17,29 @@ var vatsimDataServers = [
   'http://wazzup.flightoperationssystem.com/vatsim/vatsim-data.txt'
 ]
 var vatsimClients = []
+var clientMarkers = []
 
-var firMappings = {
-  'ABQ': 'kzab',
-  'CHI': 'kzau',
-  'BOS': 'kzbw',
-  'DC': 'kzdc',
-  'DEN': 'kzdv',
-  'FTW': 'kzfw',
-  'HOU': 'kzhu',
-  'IND': 'kzid',
-  'JAX': 'kzjx',
-  'KC': 'kzkc',
-  'LAX': 'kzla',
-  'SLC': 'kzlc',
-  'MIA': 'kzma',
-  'MEM': 'kzme',
-  'MSP': 'kzmp',
-  'OAK': 'kzoa',
-  'CLE': 'kzob',
-  'SEA': 'kzse',
-  'ATL': 'kztl',
-  'NY': 'kzwy'
-}
+var firMappings;
+$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
+  console.log("FIR Data loaded from GitLab repo")
+  firMappings = data
+}).fail(function() {
+  firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), function(data) {
+    firMappings = data
+  })
+})
+
+let friends = new Friends()
+let friendsList = friends.list
+console.log(friendsList)
 
 // wait for the application to load before trying to do things
 $(document).ready(function() {
   initialize()
   loadData()
-  console.log(vatsimClients)
+  setInterval(function() {
+    loadData()
+  }, 60000)
 });
 
 var map
@@ -133,6 +135,7 @@ function initialize() {
 
 }
 
+var willUpdate = false
 function loadData() {
   var serv = Math.floor(Math.random()*4)
   console.log(`Using data from: ${vatsimDataServers[serv]}`)
@@ -141,6 +144,13 @@ function loadData() {
     url: vatsimDataServers[serv],
     dataType: 'text',
     success: function(data) {
+      vatsimClients = [] // ensures the clients array doesn't get infinitely large
+
+      var generalData = data.indexOf('!GENERAL:')
+      var dataFrom = data.substring(generalData + 45, generalData + 60)
+      $('#data-time').html(dataFrom.substring(8,10) + ":" + dataFrom.substring(10,12) + "z")
+      generalData = "" // variables no longer used, so clear them
+
       var startClients = data.indexOf("!CLIENTS:") + 11 // +11 accounts for length of !CLIENTS: as well as newline and any other characters before the true beginning
       var endClients = data.indexOf("!SERVERS:") - 7 // -7 serves similar purpose as above
       var clientsOnly = data.substring(startClients, endClients)
@@ -164,224 +174,174 @@ function loadData() {
         */
 
         var clientSplit = clientsOnlySplit[i].split(":")
-        var tmpToAdd = {
-          callsign: clientSplit[0],
-          cid: clientSplit[1],
-          name: clientSplit[2],
-          clientType: clientSplit[3],
-          frequency: clientSplit[4],
-          lat: clientSplit[5],
-          lng: clientSplit[6],
-          altitude: clientSplit[7],
-          groundspeed: clientSplit[8],
-          aircraft: clientSplit[9],
-          tas: clientSplit[10],
-          depApt: clientSplit[11],
-          arrApt: clientSplit[13],
-          plnAltitude: clientSplit[12],
-          xpdr: clientSplit[17],
-          fltType: clientSplit[21],
-          plnDepTime: clientSplit[22],
-          plnHrsEnroute: clientSplit[24],
-          plnMinEnroute: clientSplit[25],
-          plnHrsFuel: clientSplit[26],
-          plnMinFuel: clientSplit[27],
-          remarks: clientSplit[29],
-          route: clientSplit[30],
-          depAptPos: {
-            lat: clientSplit[31],
-            lng: clientSplit[32]
-          },
-          arrAptPos: {
-            lat: clientSplit[33],
-            lng: clientSplit[34]
-          },
-          atis: clientSplit[35],
-          timeLogon: clientSplit[37],
-          heading: clientSplit[38]
+        if((clientSplit[37] >= dataFrom && willUpdate == true) || willUpdate == false) {
+          var tmpToAdd = {
+            callsign: clientSplit[0],
+            cid: clientSplit[1],
+            name: clientSplit[2],
+            clientType: clientSplit[3],
+            frequency: clientSplit[4],
+            lat: clientSplit[5],
+            lng: clientSplit[6],
+            altitude: clientSplit[7],
+            groundspeed: clientSplit[8],
+            aircraft: clientSplit[9],
+            tas: clientSplit[10],
+            depApt: clientSplit[11],
+            arrApt: clientSplit[13],
+            plnAltitude: clientSplit[12],
+            xpdr: clientSplit[17],
+            fltType: clientSplit[21],
+            plnDepTime: clientSplit[22],
+            plnHrsEnroute: clientSplit[24],
+            plnMinEnroute: clientSplit[25],
+            plnHrsFuel: clientSplit[26],
+            plnMinFuel: clientSplit[27],
+            remarks: clientSplit[29],
+            route: clientSplit[30],
+            depAptPos: {
+              lat: clientSplit[31],
+              lng: clientSplit[32]
+            },
+            arrAptPos: {
+              lat: clientSplit[33],
+              lng: clientSplit[34]
+            },
+            atis: clientSplit[35],
+            timeLogon: clientSplit[37],
+            heading: clientSplit[38],
+            marker: null,
+            online: true
+          }
+          vatsimClients.push(tmpToAdd)
         }
-        vatsimClients.push(tmpToAdd)
       }
     }
   }).done(function(d) {
-    placeMarkers()
+    updateMap()
   })
 }
 
 function placeMarkers() {
-  vatsimClients.forEach(function(client, index) {
-    if(client.clientType == "PILOT") {
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(client.lat, client.lng),
-        icon: planeSVG(client.heading),
-        map: map
-      })
-      marker.addListener('click', function() { onOpenPilotInfo(index, marker) }) // breaks if you pass addListener the onOpenInfo function directly
-    }
-
-    if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
-      var nameSplit = client.callsign.split("_")
-      if(firMappings.hasOwnProperty(nameSplit[0])) {
-        $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
-          json.features[0].properties.callsign = client.callsign
-          console.log(json.features[0].properties)
-          map.data.addGeoJson(json)
-          map.data.addListener('click', function(e) { onOpenAtcInfo(index, e.feature.getProperty('callsign')) })
-        })
-      //  map.data.addListener('click', function() { onOpenAtcInfo(index) })
-      //  google.maps.event.addListener(thisFIR, 'click', function() { onOpenAtcInfo(index) })
-      }
-    }
+  vatsimClients.forEach(function(client) {
+    placeMarker(client)
   })
 }
 
-function planeSVG(rotationDeg) {
+function placeMarker(client) {
+  if(client.clientType == "PILOT") {
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(client.lat, client.lng),
+      icon: planeSVG(client.heading, parseInt(client.cid)),
+      map: map
+    })
+    marker.addListener('click', function() { onOpenPilotInfo(client) }) // breaks if you pass addListener the onOpenInfo function directly
+    client.marker = marker
+    clientMarkers.push(marker)
+  }
+
+  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
+    var nameSplit = client.callsign.split("_")
+    if(firMappings.hasOwnProperty(nameSplit[0])) {
+      $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
+        json.features[0].properties.callsign = client.callsign
+        console.log(json.features[0].properties)
+        map.data.addGeoJson(json)
+        map.data.setStyle({
+          strokeWeight: 1
+        })
+        map.data.addListener('click', function(e) { onOpenAtcInfo(e.feature.getProperty('callsign')) })
+      })
+    }
+  }
+
+  if(friends.isFriend(client.cid)) {
+    $('#friendsListAppend').append(`
+      <tr class="friendsEntry">
+        <td>${client.name} (${client.cid})</td>
+        <td>${client.callsign}</td>
+        <td>${client.depApt} &rarr; ${client.arrApt}</td>
+      </tr>
+    `)
+  }
+}
+
+function updateMap() {
+  for(var i = 0; i < clientMarkers.length; i++) {
+    clientMarkers[i].setMap(null)
+  }
+  clientMarkers = []
+
+  map.data.forEach(function(feature) {
+    map.data.remove(feature)
+  })
+
+  placeMarkers()
+}
+
+function planeSVG(rotationDeg, cid) {
+  if(friends.isFriend(cid)) {
+    var fill = "#af9162"
+    var stroke = "#9B7C4D"
+  } else {
+    var fill = "#ccc"
+    var stroke = "#eee"
+  }
+
   return {
     path: 'M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',
-    strokeColor: '#CCC',
-    fillColor: '#EEE',
+    strokeColor: fill,
+    fillColor: stroke,
     fillOpacity: 1,
     'rotation': parseInt(rotationDeg)
   }
 }
 
 var isAlreadyOpen = false;
-function onOpenPilotInfo(i) {
+function onOpenPilotInfo(c) {
   if(!isAlreadyOpen){
     isAlreadyOpen = true
-    var c = vatsimClients[i]
-    var name = c.name.split(' ')
-    $('.row.fluid').prepend(`
-      <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
-        <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9932;</a>
-        <h4 class="mb-4 mt-1">Flight Info</h4>
-        <div class="card mb-3 bg-dark">
-          <div class="card-body">
-            <h4 class="card-title">${c.callsign}</h4>
-            <h6 class="card-subtitle mb-2 text-muted">${name[0]} ${name[1]} (${name[2]}, ${c.cid})</h6>
-            <div class="card-text d-flex justify-content-spc"><h5>${c.depApt}</h5><h5>&rarr;</h5><h5>${c.arrApt}</h5></div>
-          </div>
-          <table class="table">
-            <tbody>
-              <tr>
-                <td colspan="2">
-                  <span class="text-muted">Aboard</span><br>
-                  <span>${c.aircraft}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="text-muted">Altitude</span><br>
-                  <span>${c.altitude}</span>
-                </td>
-                <td>
-                  <span class="text-muted">Planned Altitude</span><br>
-                  <span>${c.plnAltitude}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="text-muted">Ground Speed</span><br>
-                  <span>${c.groundspeed}</span>
-                </td>
-                <td>
-                  <span class="text-muted">Planned TAS</span><br>
-                  <span>${c.tas}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="text-muted">Latitude</span><br>
-                  <span>${c.lat}</span>
-                </td>
-                <td>
-                  <span class="text-muted">Longitude</span><br>
-                  <span>${c.lng}</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="text-muted">Heading</span><br>
-                  <span>${c.heading}</span>
-                </td>
-                <td>
-                  <span class="text-muted">Squawk</span><br>
-                  <span>${c.xpdr}</span>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <span class="text-muted">Planned Route</span><br>
-                  <span>${c.route}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="card-body pt-0">
-            <a href="https://stats.vatsim.net/search_id.php?id=${c.cid}" class="card-link">View Stats</a>
-          </div>
-        </div>
-      </div>
-    `)
+
+    var addFriendStr
+    if(!friends.isFriend(c.cid)) {
+      addFriendStr = `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
+    } else {
+      addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
+    }
+
+    var info = new InfoPane("pilot")
+
+    $('.row.fluid').prepend(info.build(c, addFriendStr))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
     closeInfo()
-    onOpenPilotInfo(i)
+    onOpenPilotInfo(c)
   }
 }
 
-function onOpenAtcInfo(i, n) {
+function onOpenAtcInfo(n) {
   if(!isAlreadyOpen){
     isAlreadyOpen = true
     var c = vatsimClients.find(function(element) {
       return element.callsign == n
     })
-    var name = c.name.split(' ')
-    var splitAtis = c.atis.split('^�')
-    var finalAtis = ""
-    for(var i = 0; i < splitAtis.length; i++) {
-      finalAtis += '<p class="atis">' + splitAtis[i] + '</p>'
+
+    var addFriendStr
+    if(!friends.isFriend(c.cid)) {
+      addFriendStr = `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
+    } else {
+      addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
     }
-    console.log(c.atis)
-    console.log(splitAtis)
-    $('.row.fluid').prepend(`
-      <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
-        <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9932;</a>
-        <h4 class="mb-4 mt-1">Flight Info</h4>
-        <div class="card mb-3 bg-dark">
-          <div class="card-body">
-            <h4 class="card-title">${c.callsign}</h4>
-            <h6 class="card-subtitle mb-2 text-muted">${name[0]} ${name[1]} (${c.cid})</h6>
-            <h5 class="card-text">${c.frequency}</h5>
-          </div>
-          <table class="table">
-            <tbody>
-              <tr>
-                <td colspan="2">
-                  <span class="text-muted">ATIS Message</span><br>
-                  <span>${finalAtis}</span>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <span class="text-muted">Time online</span><br>
-                  <span>Online since ${c.timeLogon.substring(8, 10) + ':' + c.timeLogon.substring(10, 12)}</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="card-body pt-0">
-            <a href="https://stats.vatsim.net/search_id.php?id=${c.cid}" class="card-link">View Stats</a>
-          </div>
-        </div>
-      </div>
-    `)
+
+    let info = new InfoPane("atc")
+
+    $('.row.fluid').prepend(info.build(c, addFriendStr))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
     closeInfo()
-    onOpenAtcInfo(i, n)
+    onOpenAtcInfo(n)
   }
 }
 
@@ -396,6 +356,7 @@ $(document).on('click', '#closeFltInfo', () => {
 })
 
 $("#quit").on('click', () => {
+  friends.set('friends', friendsList)
   remote.getCurrentWindow().close()
 })
 
@@ -412,6 +373,23 @@ $("#maximize").on('click', () => {
 
 $("#minimize").on('click', () => {
   remote.getCurrentWindow().minimize()
+})
+
+$('#reloadData').on('click', () => {
+  updateMap()
+})
+
+$(document).on('click', '#addFriend', (e) => {
+  var cid = $(e.toElement).attr('data-cid')
+  console.log("friendsList: add friend " + cid)
+  friendsList.push(parseInt(cid))
+  console.log(friendsList)
+})
+
+$(document).on('click', '#rmFriend', (e) => {
+  var cid = $(e.toElement).attr('data-cid')
+  var index = friendsList.indexOf(parseInt(cid))
+  friendsList.splice(index, 1)
 })
 
 $(document).on('click', 'a[href^="https"]', function(e) {
