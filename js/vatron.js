@@ -351,7 +351,7 @@ $(document).on('click', '#closeFltInfo', () => {
 })
 
 $("#quit").on('click', () => {
-  friends.set('friends', friendsList)
+  friends.set(friendsList)
   remote.getCurrentWindow().close()
 })
 

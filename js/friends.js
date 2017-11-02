@@ -2,7 +2,7 @@ const Store = require('./store.js')
 
 class Friends {
   constructor() {
-    let friendsListJSON = new Store({
+    this.friendsListJSON = new Store({
       configName: 'friends-list',
       defaults: {
         friends: [
@@ -11,15 +11,15 @@ class Friends {
       }
     })
 
-    this.friendsList = friendsListJSON.get('friends')
+    this.friendsList = this.friendsListJSON.get('friends')
   }
 
   get list() {
     return this.friendsList
   }
 
-  set set(newList) {
-    friendsListJSON.set('friends', newList)
+  set(newList) {
+    this.friendsListJSON.set('friends', newList)
   }
 
   set rebuild(newList) {
