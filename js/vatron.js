@@ -4,11 +4,6 @@ const Store = require('./js/store.js')
 const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
 
-// turns out #9932 is incompatible with macOS, this fixes that for that platform only.
-if(process.platform == "darwin") {
-  $('#quit, #closeFltInfo').html('&#10540;')
-}
-
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
   'http://info.vroute.net/vatsim-data.txt',
