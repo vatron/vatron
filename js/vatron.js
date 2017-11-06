@@ -3,6 +3,7 @@ const {remote, shell} = require('electron')
 const Store = require('./js/store.js')
 const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
+const PosRep = require('./js/posrep.js')
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -237,7 +238,7 @@ function placeMarker(client) {
 
   if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
     var nameSplit = client.callsign.split("_")
-    if(firMappings.hasOwnProperty(nameSplit[0])) {
+    if(firMappings !== 'undefined' && firMappings.hasOwnProperty(nameSplit[0])) {
       $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
         json.features[0].properties.callsign = client.callsign
         console.log(json.features[0].properties)
@@ -247,6 +248,8 @@ function placeMarker(client) {
         })
         map.data.addListener('click', function(e) { onOpenAtcInfo(e.feature.getProperty('callsign')) })
       })
+    } else if(firMappings === 'undefined') {
+      placeMarker(client)
     }
   }
 
@@ -390,4 +393,18 @@ $(document).on('click', '#rmFriend', (e) => {
 $(document).on('click', 'a[href^="https"]', function(e) {
   e.preventDefault()
   shell.openExternal(this.href)
+})
+
+$(document).on('click', '#generatePosRep', function(e) {
+  var next = $('#posNext').val()
+  console.log(next)
+  var nextTime = $('#posNextTime').val()
+  var then = $('#posThen').val()
+  var thenTime = $('#posThenTime').val()
+  var third = $('#posThird').val()
+  var mach = $('#posMach').val()
+  var alt =  $('#posAlt').val()
+
+  posrep = new PosRep(next, nextTime, then, thenTime, third, mach, alt)
+  $('#generatedPosRep').html(posrep.toString())
 })

@@ -24,6 +24,9 @@
             <a class="nav-link" data-toggle="modal" href="#friendsList">Friends</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" data-toggle="modal" href="#posrep">Position Report</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link">&#128339; <span id="data-time"></span></a>
           </li>
           <li class="nav-item">
@@ -63,6 +66,65 @@
             <tbody id="friendsListAppend">
             </tbody>
           </table>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="posrep" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Create a Position Report</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="row form-group">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Enroute Waypoint" id="posNext">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="ETA" id="posNextTime">
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Second Waypoint" id="posThen">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="ETA" id="posThenTime">
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Third Waypoint" id="posThird">
+                </div>
+                <div class="col"></div>
+              </div>
+              <div class="row form-group">
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Mach Number" id="posMach">
+                </div>
+                <div class="col">
+                  <input type="text" class="form-control" placeholder="Altitude" id="posAlt">
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col">
+                  <a class="btn btn-primary" href="#" id="generatePosRep">Generate</a>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col">
+                  <p id="generatedPosRep"></p>
+                </div>
+              </div>
+            </form>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
