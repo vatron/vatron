@@ -4,7 +4,6 @@ const Store = require('./js/store.js')
 const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
-
 const WindowControls = require('./js/window-controls.js')
 
 // all available servers that serve vatsim network data

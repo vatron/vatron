@@ -8,13 +8,13 @@ class WindowControls {
   start() {
     let $ = this.$
 
-    $("#quit").on('click', () => {
+    $(document).on('click', '#quit', () => {
       friends.set(friendsList)
       remote.getCurrentWindow().close()
     })
 
     var maxed = false;
-    $("#maximize").on('click', () => {
+    $(document).on('click', '#maximize', () => {
       if(!maxed) {
         maxed = true
         remote.getCurrentWindow().maximize()
@@ -24,14 +24,23 @@ class WindowControls {
       }
     })
 
-    $("#minimize").on('click', () => {
+    $(document).on('click', '#minimize', () => {
       remote.getCurrentWindow().minimize()
     })
 
-    if(process.platform == 'darwin') {
-      $('#window-controls').remove()
-    } else {
+    if(process.platform != 'darwin') {
       $('#window-controls-darwin').remove()
+      $('#navbarNav>ul').append(`
+        <li class="nav-item ml-md-auto">
+          <a class="nav-link" href="#" id="minimize">&#9866;</a>
+        </li>
+        <li class="nav-item ml-md-4">
+          <a class="nav-link" href="#" id="maximize">&#9744;</a>
+        </li>
+        <li class="nav-item ml-md-4">
+          <a class="nav-link" href="#" id="quit">&#9587;</a>
+        </li>
+      `)
     }
   }
 }
