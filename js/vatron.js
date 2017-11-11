@@ -5,6 +5,8 @@ const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
 
+const WindowControls = require('./js/window-controls.js')
+
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
   'http://info.vroute.net/vatsim-data.txt',
@@ -29,8 +31,11 @@ let friends = new Friends()
 let friendsList = friends.list
 console.log(friendsList)
 
+let windowControls = new WindowControls($)
+
 // wait for the application to load before trying to do things
 $(document).ready(function() {
+  windowControls.start()
   initialize()
   loadData()
   setInterval(function() {
@@ -351,26 +356,6 @@ function closeInfo() {
 
 $(document).on('click', '#closeFltInfo', () => {
   closeInfo()
-})
-
-$("#quit").on('click', () => {
-  friends.set(friendsList)
-  remote.getCurrentWindow().close()
-})
-
-var maxed = false;
-$("#maximize").on('click', () => {
-  if(!maxed) {
-    maxed = true
-    remote.getCurrentWindow().maximize()
-  } else {
-    maxed = false
-    remote.getCurrentWindow().unmaximize()
-  }
-})
-
-$("#minimize").on('click', () => {
-  remote.getCurrentWindow().minimize()
 })
 
 $('#reloadData').on('click', () => {

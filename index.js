@@ -9,7 +9,7 @@ const Store = require('./js/store.js')
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 1010, height: 700, minWidth: 1010, frame: false})
+  mainWindow = new BrowserWindow({width: 1010, height: 700, minWidth: 1010, minHeight: 56, frame: false})
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
