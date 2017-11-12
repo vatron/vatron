@@ -5,6 +5,7 @@ const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
 const WindowControls = require('./js/window-controls.js')
+const Map = require('./js/map.js')
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -20,9 +21,11 @@ var firMappings;
 $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
   console.log("FIR Data loaded from GitLab repo")
   firMappings = data
+  loadData()
 }).fail(function() {
   firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), function(data) {
     firMappings = data
+    loadData()
   })
 })
 
@@ -35,105 +38,16 @@ let windowControls = new WindowControls($)
 // wait for the application to load before trying to do things
 $(document).ready(function() {
   windowControls.start()
-  initialize()
-  loadData()
   setInterval(function() {
     loadData()
   }, 60000)
 });
 
-var map
-function initialize() {
-
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 15, lng: 0},
-    zoom: 2,
-    mapTypeControl: false,
-    streetViewControl: false,
-    styles: [
-      // style from https://developers.google.com/maps/documentation/javascript/examples/style-array
-      {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
-      {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
-      {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
-      {
-        featureType: 'administrative.locality',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#d59563'}]
-      },
-      {
-        featureType: 'poi',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#d59563'}]
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'geometry',
-        stylers: [{color: '#263c3f'}]
-      },
-      {
-        featureType: 'poi.park',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#6b9a76'}]
-      },
-      {
-        featureType: 'road',
-        elementType: 'geometry',
-        stylers: [{color: '#38414e'}]
-      },
-      {
-        featureType: 'road',
-        elementType: 'geometry.stroke',
-        stylers: [{color: '#212a37'}]
-      },
-      {
-        featureType: 'road',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#9ca5b3'}]
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry',
-        stylers: [{color: '#746855'}]
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'geometry.stroke',
-        stylers: [{color: '#1f2835'}]
-      },
-      {
-        featureType: 'road.highway',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#f3d19c'}]
-      },
-      {
-        featureType: 'transit',
-        elementType: 'geometry',
-        stylers: [{color: '#2f3948'}]
-      },
-      {
-        featureType: 'transit.station',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#d59563'}]
-      },
-      {
-        featureType: 'water',
-        elementType: 'geometry',
-        stylers: [{color: '#17263c'}]
-      },
-      {
-        featureType: 'water',
-        elementType: 'labels.text.fill',
-        stylers: [{color: '#515c6d'}]
-      },
-      {
-        featureType: 'water',
-        elementType: 'labels.text.stroke',
-        stylers: [{color: '#17263c'}]
-      }
-    ]
-  })
-
-}
+// change markers based on zoom level
+google.maps.event.addListener(Map, 'zoom_changed', function() {
+  if(Map.getZoom() >= 4) setMarkerPlanes()
+  if(Map.getZoom() < 4) setMarkerDots()
+})
 
 var willUpdate = false
 function loadData() {
@@ -230,10 +144,13 @@ function placeMarkers() {
 
 function placeMarker(client) {
   if(client.clientType == "PILOT") {
+    let icon = planeSVG(client.heading, parseInt(client.cid))
+    if(Map.getZoom() < 4) icon = dotSVG(parseInt(client.cid))
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(client.lat, client.lng),
-      icon: planeSVG(client.heading, parseInt(client.cid)),
-      map: map
+      icon: icon,
+      map: Map,
+      title: client.cid
     })
     marker.addListener('click', function() { onOpenPilotInfo(client) }) // breaks if you pass addListener the onOpenInfo function directly
     client.marker = marker
@@ -246,11 +163,11 @@ function placeMarker(client) {
       $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
         json.features[0].properties.callsign = client.callsign
         console.log(json.features[0].properties)
-        map.data.addGeoJson(json)
-        map.data.setStyle({
+        Map.data.addGeoJson(json)
+        Map.data.setStyle({
           strokeWeight: 1
         })
-        map.data.addListener('click', function(e) { onOpenAtcInfo(e.feature.getProperty('callsign')) })
+        Map.data.addListener('click', function(e) { onOpenAtcInfo(e.feature.getProperty('callsign')) })
       })
     } else if(firMappings === 'undefined') {
       placeMarker(client)
@@ -274,8 +191,8 @@ function updateMap() {
   }
   clientMarkers = []
 
-  map.data.forEach(function(feature) {
-    map.data.remove(feature)
+  Map.data.forEach(function(feature) {
+    Map.data.remove(feature)
   })
 
   placeMarkers()
@@ -296,6 +213,33 @@ function planeSVG(rotationDeg, cid) {
     fillColor: stroke,
     fillOpacity: 1,
     'rotation': parseInt(rotationDeg)
+  }
+}
+
+function dotSVG(cid) {
+  if(friends.isFriend(cid)) {
+    var stroke = "#9B7C4D"
+  } else {
+    var stroke = "#eee"
+  }
+
+  return {
+    path: 'M-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0',
+    fillColor: stroke,
+    fillOpacity: 1,
+    strokeOpacity: 0
+  }
+}
+
+function setMarkerDots() {
+  for(var i = 0; i < clientMarkers.length; i++) {
+    clientMarkers[i].setIcon(dotSVG(parseInt(clientMarkers[i].getTitle())))
+  }
+}
+
+function setMarkerPlanes() {
+  for(var i = 0; i < clientMarkers.length; i++) {
+    clientMarkers[i].setIcon(planeSVG(parseInt(clientMarkers[i].getTitle())))
   }
 }
 
