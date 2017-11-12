@@ -40,7 +40,7 @@
     "files": [
       {
         "filter": [
-          "world.json"
+          "!world.json"
         ]
       }
     ]
