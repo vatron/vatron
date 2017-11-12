@@ -17,10 +17,12 @@ var vatsimDataServers = [
 var vatsimClients = []
 var clientMarkers = []
 
-var firMappings;
-$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/aliass.json', function(data) {
+var firMappings
+var usingOnlineData = false
+$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
   console.log("FIR Data loaded from GitLab repo")
   firMappings = data
+  usingOnlineData = true
   loadData()
 }).fail(function() {
   firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), function(data) {
@@ -160,7 +162,9 @@ function placeMarker(client) {
   if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
     var nameSplit = client.callsign.split("_")
     if(firMappings !== 'undefined' && firMappings.hasOwnProperty(nameSplit[0])) {
-      $.getJSON(path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`), function(json) {
+      var firDataUrl = path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`)
+      if(usingOnlineData) firDataUrl = `https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
+      $.getJSON(firDataUrl, function(json) {
         json.features[0].properties.callsign = client.callsign
         console.log(json.features[0].properties)
         Map.data.addGeoJson(json)
