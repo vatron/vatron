@@ -5,3 +5,4 @@ Data from [espinielli/icao_data](https://github.com/espinielli/icao_data)
 
 FIRs should be done one entire country/region at a time. Completed countries:
 * USA
+* Canada

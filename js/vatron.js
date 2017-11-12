@@ -18,7 +18,7 @@ var vatsimClients = []
 var clientMarkers = []
 
 var firMappings;
-$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
+$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/aliass.json', function(data) {
   console.log("FIR Data loaded from GitLab repo")
   firMappings = data
   loadData()

@@ -36,6 +36,13 @@
     "productName": "Vatron",
     "mac": {
       "category": "public.app-category.utilities"
-    }
+    },
+    "files": [
+      {
+        "filter": [
+          "world.json"
+        ]
+      }
+    ]
   }
 }
