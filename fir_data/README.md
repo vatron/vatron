@@ -4,5 +4,19 @@ This folder contains FIR boundaries for the world. Master data sheet in `world.j
 Data from [espinielli/icao_data](https://github.com/espinielli/icao_data)
 
 FIRs should be done one entire country/region at a time. Completed countries:
-* USA
+* Belgium
 * Canada
+* Denmark
+* Estonia
+* Finland
+* Germany
+* Iceland
+* Ireland
+* Lithuania
+* Latvia
+* The Netherlands
+* Norway
+* Poland
+* Sweden
+* United Kingdom
+* USA

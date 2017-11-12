@@ -1,4 +1,60 @@
 {
+  "_comment": "Belgium",
+  "EBBU": "ebbu",
+
+  "_comment": "Canada",
+  "CZEG": "czeg",
+  "CZQM": "czqm",
+  "CZQX": "czqx",
+  "CZUL": "czul",
+  "CZVR": "czvr",
+  "CZWG": "czwg",
+  "CZYZ": "czyz",
+
+  "_comment": "Denmark",
+  "EKDK": "ekdk",
+
+  "_comment": "Estonia",
+  "eetn": "eetn",
+
+  "_comment": "Finland",
+  "EFIN": "efin",
+
+  "_comment": "Germany",
+  "EDWW": "edww",
+  "EDGG": "edgg",
+  "EDMM": "edmm",
+
+  "_comment": "Iceland",
+  "BIRD": "bird",
+
+  "_comment": "Ireland",
+  "EISN": "eisn",
+
+  "_comment": "Lithuania",
+  "EYVL": "eyvl",
+
+  "_comment": "Latvia",
+  "evrr": "evrr",
+
+  "_comment": "The Netherlands",
+  "EHAA": "ehaa",
+
+  "_comment": "Norway",
+  "ENOB": "enob",
+  "ENOR": "enor",
+
+  "_comment": "Sweden",
+  "ESAA": "esaa",
+  "ESOS": "esaa",
+
+  "_comment": "United Kingdom",
+  "EGTT": "egtt",
+  "LON": "egtt",
+  "EGPX": "egpx",
+  "SCO": "egpx",
+
+  "_comment": "USA",
   "ABQ": "kzab",
   "CHI": "kzau",
   "BOS": "kzbw",
@@ -18,13 +74,5 @@
   "CLE": "kzob",
   "SEA": "kzse",
   "ATL": "kztl",
-  "NY": "kzwy",
-
-  "CZEG": "czeg",
-  "CZQM": "czqm",
-  "CZQX": "czqx",
-  "CZUL": "czul",
-  "CZVR": "czvr",
-  "CZWG": "czwg",
-  "CZYZ": "czyz"
+  "NY": "kzwy"
 }
