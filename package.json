@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build-win64": "electron-builder --x64",
+    "build-darwin": "electron-builder --x64 --mac"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   "homepage": "https://gitlab.com/andrewward2001/vatron#README",
   "devDependencies": {
     "electron": "1.7.8",
+    "electron-builder": "^19.45.4",
     "path": "^0.12.7",
     "url": "^0.11.0"
   },
@@ -27,5 +30,12 @@
     "fs": "0.0.1-security",
     "jquery": "^3.2.1",
     "popper.js": "^1.12.5"
+  },
+  "build": {
+    "appId": "com.andrewward2001.vatron",
+    "productName": "Vatron",
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
   }
 }
