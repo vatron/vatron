@@ -37,6 +37,18 @@
     "mac": {
       "category": "public.app-category.utilities"
     },
+	"win": {
+	  "target": ["nsis", "portable"],
+	  "icon": "build/icon.ico"
+	},
+	"nsis": {
+	  "artifactName": "${productName}Installer.${version}.${ext}",
+	  "installerIcon": "build/icon.ico",
+	  "installerHeaderIcon": "build/icon.ico"
+	},
+	"portable": {
+	  "artifactName": "${productName}Portable.${version}.${ext}"
+	},
     "files": [
       {
         "filter": [
