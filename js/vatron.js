@@ -6,6 +6,7 @@ const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
 const WindowControls = require('./js/window-controls.js')
 const Map = require('./js/map.js')
+const SVGs = require('./js/svgs.js')
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -16,6 +17,7 @@ var vatsimDataServers = [
 ]
 var vatsimClients = []
 var clientMarkers = []
+var info
 
 var firMappings
 var usingOnlineData = false
@@ -31,9 +33,16 @@ $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.js
   })
 })
 
+var airports
+$.getJSON(path.join(__dirname, '/navdata/airports.json'), function(data) {
+  airports = data
+})
+
 let friends = new Friends()
 let friendsList = friends.list
 console.log(friendsList)
+
+let svgs = new SVGs()
 
 let windowControls = new WindowControls($)
 
@@ -146,8 +155,8 @@ function placeMarkers() {
 
 function placeMarker(client) {
   if(client.clientType == "PILOT") {
-    let icon = planeSVG(client.heading, parseInt(client.cid))
-    if(Map.getZoom() < 4) icon = dotSVG(parseInt(client.cid))
+    let icon = svgs.planeSVG(client.heading, parseInt(client.cid))
+    if(Map.getZoom() < 4) icon = svgs.dotSVG(parseInt(client.cid))
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(client.lat, client.lng),
       icon: icon,
@@ -202,48 +211,15 @@ function updateMap() {
   placeMarkers()
 }
 
-function planeSVG(rotationDeg, cid) {
-  if(friends.isFriend(cid)) {
-    var fill = "#af9162"
-    var stroke = "#9B7C4D"
-  } else {
-    var fill = "#ccc"
-    var stroke = "#eee"
-  }
-
-  return {
-    path: 'M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z',
-    strokeColor: fill,
-    fillColor: stroke,
-    fillOpacity: 1,
-    'rotation': parseInt(rotationDeg)
-  }
-}
-
-function dotSVG(cid) {
-  if(friends.isFriend(cid)) {
-    var stroke = "#9B7C4D"
-  } else {
-    var stroke = "#eee"
-  }
-
-  return {
-    path: 'M-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0',
-    fillColor: stroke,
-    fillOpacity: 1,
-    strokeOpacity: 0
-  }
-}
-
 function setMarkerDots() {
   for(var i = 0; i < clientMarkers.length; i++) {
-    clientMarkers[i].setIcon(dotSVG(parseInt(clientMarkers[i].getTitle())))
+    clientMarkers[i].setIcon(svgs.dotSVG(parseInt(clientMarkers[i].getTitle())))
   }
 }
 
 function setMarkerPlanes() {
   for(var i = 0; i < clientMarkers.length; i++) {
-    clientMarkers[i].setIcon(planeSVG(parseInt(clientMarkers[i].getTitle())))
+    clientMarkers[i].setIcon(svgs.planeSVG(parseInt(clientMarkers[i].getTitle())))
   }
 }
 
@@ -259,9 +235,9 @@ function onOpenPilotInfo(c) {
       addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
     }
 
-    var info = new InfoPane("pilot")
+    info = new InfoPane("pilot")
 
-    $('.row.fluid').prepend(info.build(c, addFriendStr))
+    $('.row.fluid').prepend(info.build(c, addFriendStr, airports))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
@@ -284,9 +260,9 @@ function onOpenAtcInfo(n) {
       addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
     }
 
-    let info = new InfoPane("atc")
+    info = new InfoPane("atc")
 
-    $('.row.fluid').prepend(info.build(c, addFriendStr))
+    $('.row.fluid').prepend(info.build(c, addFriendStr, airports))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
@@ -297,8 +273,10 @@ function onOpenAtcInfo(n) {
 
 function closeInfo() {
   isAlreadyOpen = false
+  info.close()
   $('#fltInfo').remove()
   $('#map').toggleClass('col-6 col-md-8 col-xl-9')
+  info = undefined
 }
 
 $(document).on('click', '#closeFltInfo', () => {

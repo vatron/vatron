@@ -1,9 +1,12 @@
+const SVGs = require('./svgs.js')
+var svgs = new SVGs()
+
 class InfoPane {
   constructor(type) {
     this.type = type
   }
 
-  build(c, addFriendStr) {
+  build(c, addFriendStr, airports) {
     if(this.type == "atc") {
       let name = c.name.split(' ')
       let splitAtis = c.atis.split('^�') // meant to be that weird question mark character
@@ -46,6 +49,53 @@ class InfoPane {
       </div>
       `
     } else {
+      this.aptFrom = new google.maps.Marker({
+        position: new google.maps.LatLng(airports[c.depApt].lat, airports[c.depApt].lng),
+        icon: svgs.markerSVG(),
+        map: Map,
+        title: c.depApt
+      })
+      this.aptTo = new google.maps.Marker({
+        position: new google.maps.LatLng(airports[c.arrApt].lat, airports[c.arrApt].lng),
+        icon: svgs.markerSVG(),
+        map: Map,
+        title: c.arrApt
+      })
+      let fromLineCoords = [
+        {lat: airports[c.depApt].lat, lng: airports[c.depApt].lng},
+        {lat: parseFloat(c.lat), lng: parseFloat(c.lng)}
+      ]
+      this.fromLine = new google.maps.Polyline({
+        path: fromLineCoords,
+        geodesic: true,
+        strokeColor: '#EE1111',
+        strokeOpacity: 1,
+        strokeWeight: 2,
+        map: Map
+      })
+
+      let toLineCoords = [
+        {lat: parseFloat(c.lat), lng: parseFloat(c.lng)},
+        {lat: airports[c.arrApt].lat, lng: airports[c.arrApt].lng}
+      ]
+      this.toLine = new google.maps.Polyline({
+        path: toLineCoords,
+        geodesic: true,
+        strokeOpacity: 0,
+        icons: [{
+          icon: {
+            path: 'M 0,-1 0,1',
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: '#EE1111',
+            scale: 4
+          },
+          offset: '0',
+          repeat: '20px'
+        }],
+        map: Map
+      })
+
       var name = c.name.split(' ')
 
       return `
@@ -121,6 +171,15 @@ class InfoPane {
         </div>
       </div>
       `
+    }
+  }
+
+  close() {
+    if(this.aptFrom !== undefined) {
+      this.aptFrom.setMap(null)
+      this.aptTo.setMap(null)
+      this.fromLine.setMap(null)
+      this.toLine.setMap(null)
     }
   }
 }
