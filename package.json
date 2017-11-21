@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
     "build-win64": "electron-builder --x64",
-    "build-darwin": "electron-builder --x64 --mac"
+    "build-darwin": "electron-builder --x64 --mac",
+    "make-apt": "node navdata/airports_parse.js < navdata/airports.txt"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://gitlab.com/andrewward2001/vatron#README",
   "devDependencies": {
+    "cli": "^1.0.1",
     "electron": "1.7.8",
     "electron-builder": "^19.45.4",
     "path": "^0.12.7",
@@ -37,18 +39,21 @@
     "mac": {
       "category": "public.app-category.utilities"
     },
-	"win": {
-	  "target": ["nsis", "portable"],
-	  "icon": "build/icon.ico"
-	},
-	"nsis": {
-	  "artifactName": "${productName}Installer.${version}.${ext}",
-	  "installerIcon": "build/icon.ico",
-	  "installerHeaderIcon": "build/icon.ico"
-	},
-	"portable": {
-	  "artifactName": "${productName}Portable.${version}.${ext}"
-	},
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "artifactName": "${productName}Installer.${version}.${ext}",
+      "installerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}Portable.${version}.${ext}"
+    },
     "files": [
       {
         "filter": [
