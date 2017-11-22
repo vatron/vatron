@@ -17,6 +17,7 @@ var vatsimDataServers = [
 ]
 var vatsimClients = []
 var clientMarkers = []
+var lclCircles = []
 var info
 
 var firMappings
@@ -187,6 +188,58 @@ function placeMarker(client) {
     }
   }
 
+  if(client.clientType == "ATC" && client.frequency != "199.998" && (client.callsign.indexOf('APP') != -1 || client.callsign.indexOf('DEP') != -1)) {
+    var circle = new google.maps.Circle({
+      fillColor: '#673AB7',
+      strokeColor: '#512DA8',
+      strokeWeight: 1,
+      map: Map,
+      center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
+      radius: 80000 // ~50mi
+    })
+    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    lclCircles.push(circle)
+  }
+
+  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('TWR') != -1) {
+    var circle = new google.maps.Circle({
+      fillColor: '#03A9F4',
+      strokeColor: '#0288D1',
+      strokeWeight: 1,
+      map: Map,
+      center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
+      radius: 32000 // ~20mi
+    })
+    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    lclCircles.push(circle)
+  }
+
+  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('GND') != -1) {
+    var circle = new google.maps.Circle({
+      fillColor: '#FFC107',
+      strokeColor: '#FFA000',
+      strokeWeight: 1,
+      map: Map,
+      center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
+      radius: 8000 // ~5mi
+    })
+    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    lclCircles.push(circle)
+  }
+
+  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('DEL') != -1) {
+    var circle = new google.maps.Circle({
+      fillColor: '#607D8B',
+      strokeColor: '#455A64',
+      strokeWeight: 1,
+      map: Map,
+      center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
+      radius: 4000 // ~2.5mi
+    })
+    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    lclCircles.push(circle)
+  }
+
   if(friends.isFriend(client.cid)) {
     $('#friendsListAppend').append(`
       <tr class="friendsEntry">
@@ -203,6 +256,11 @@ function updateMap() {
     clientMarkers[i].setMap(null)
   }
   clientMarkers = []
+
+  for(var i = 0; i < lclCircles.length; i++) {
+    lclCircles[i].setMap(null)
+  }
+  lclCircles = []
 
   Map.data.forEach(function(feature) {
     Map.data.remove(feature)
@@ -235,9 +293,9 @@ function onOpenPilotInfo(c) {
       addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
     }
 
-    info = new InfoPane("pilot")
+    info = new InfoPane()
 
-    $('.row.fluid').prepend(info.build(c, addFriendStr, airports))
+    $('.row.fluid').prepend(info.buildPilot(c, addFriendStr, airports, onOpenAirportInfo))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
@@ -260,14 +318,31 @@ function onOpenAtcInfo(n) {
       addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
     }
 
-    info = new InfoPane("atc")
+    info = new InfoPane()
 
-    $('.row.fluid').prepend(info.build(c, addFriendStr, airports))
+    $('.row.fluid').prepend(info.buildATC(c, addFriendStr))
     $('#map').toggleClass('col-6 col-md-8 col-xl-9')
   } else {
     // resets window and calls the function again
     closeInfo()
     onOpenAtcInfo(n)
+  }
+}
+
+function onOpenAirportInfo(code, apt) {
+  if(!isAlreadyOpen){
+    isAlreadyOpen = true
+
+    var c = vatsimClients.filter(element => (element.depApt == code || element.arrApt == code))
+
+    info = new InfoPane()
+
+    $('.row.fluid').prepend(info.buildAirport(c, code, apt))
+    $('#map').toggleClass('col-6 col-md-8 col-xl-9')
+  } else {
+    // resets window and calls the function again
+    closeInfo()
+    onOpenAirportInfo(code, apt)
   }
 }
 
