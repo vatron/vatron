@@ -7,6 +7,7 @@ const PosRep = require('./js/posrep.js')
 const WindowControls = require('./js/window-controls.js')
 const Map = require('./js/map.js')
 const SVGs = require('./js/svgs.js')
+const Settings = require('./js/settings.js')
 
 // all available servers that serve vatsim network data
 var vatsimDataServers = [
@@ -15,12 +16,13 @@ var vatsimDataServers = [
   'http://vatsim.aircharts.org/vatsim-data.txt',
   'http://wazzup.flightoperationssystem.com/vatsim/vatsim-data.txt'
 ]
-var vatsimClients = []
-var clientMarkers = []
-var lclCircles = []
-var info
+var
+  vatsimClients = [],
+  clientMarkers = [],
+  lclCircles = [],
+  info,
+  firMappings
 
-var firMappings
 var usingOnlineData = false
 $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
   console.log("FIR Data loaded from GitLab repo")
@@ -37,6 +39,7 @@ $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.js
 var airports
 $.getJSON(path.join(__dirname, '/navdata/airports.json'), function(data) {
   airports = data
+  $('#aptCycle').html(airports._info.cycle)
 })
 
 let friends = new Friends()
@@ -44,15 +47,24 @@ let friendsList = friends.list
 console.log(friendsList)
 
 let svgs = new SVGs()
-
 let windowControls = new WindowControls($)
+let mSettings = new Settings()
+let settings = new Store({configName: 'settings'})
 
 // wait for the application to load before trying to do things
 $(document).ready(function() {
   windowControls.start()
   setInterval(function() {
     loadData()
-  }, 60000)
+  }, parseInt(settings.get('dataRefresh')))
+
+  $('#vatron').popover({
+    content: '<span class="lead"><a href="#flights" data-toggle="modal">Flights</a><hr class="my-2"><a href="#settings" data-toggle="modal">Settings</a><hr class="my-2"><a href="#about" data-toggle="modal">About Vatron</a></span>',
+    html: true,
+    trigger: 'focus'
+  })
+
+  $('#version').html(remote.app.getVersion())
 });
 
 // change markers based on zoom level
@@ -167,6 +179,15 @@ function placeMarker(client) {
     marker.addListener('click', function() { onOpenPilotInfo(client) }) // breaks if you pass addListener the onOpenInfo function directly
     client.marker = marker
     clientMarkers.push(marker)
+
+    $('#flightsAppend').append(`
+      <tr class="flightsEntry">
+        <td>${client.callsign}</td>
+        <td>${client.name} (${client.cid})</td>
+        <td>${client.depApt}</td>
+        <td>${client.arrApt}</td>
+      </tr>
+    `)
   }
 
   if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {

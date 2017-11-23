@@ -51,6 +51,10 @@ a.white:hover {
   color: rgb(220, 223, 226);
 }
 
+a:hover {
+  text-decoration: none;
+}
+
 .justify-content-spc {
   justify-content: space-between;
 }

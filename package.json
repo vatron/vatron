@@ -1,6 +1,6 @@
 {
   "name": "vatron",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "An open source, fast, and accessible VATSIM radar client built with Electron",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "bootstrap": "^4.0.0-beta",
     "fs": "0.0.1-security",
     "jquery": "^3.2.1",
-    "popper.js": "^1.12.5"
+    "popper.js": "^1.12.9"
   },
   "build": {
     "appId": "com.andrewward2001.vatron",
