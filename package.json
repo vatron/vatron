@@ -58,7 +58,7 @@
       "artifactName": "${productName}Portable.${version}.${ext}"
     },
     "squirrelWindows": {
-      "iconUrl": "https://gitlab.com/andrewward2001/vatron/blob/master/icons/icon.ico"
+      "iconUrl": "https://gitlab.com/andrewward2001/vatron/blob/master/build/icon.ico"
     },
     "files": [
       {
