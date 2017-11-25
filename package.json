@@ -4,7 +4,7 @@
   "description": "An open source, fast, and accessible VATSIM radar client built with Electron",
   "main": "index.js",
   "scripts": {
-    "test": "standard && node test/test.js",
+    "test": "yarn run standard && node test/test.js",
     "start": "electron .",
     "build-win64": "electron-builder --x64",
     "build-darwin": "electron-builder --x64 --mac",
