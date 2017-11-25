@@ -3,6 +3,7 @@ version: 0.2.0.{build}
 install:
   - ps: Install-Product node $env:9
   - yarn
+  - npm install -g standard
 
 build: off
 build_script:
