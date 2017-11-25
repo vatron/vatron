@@ -1,0 +1,19 @@
+version: 0.2.0.{build}
+
+install:
+  - ps: Install-Product node $env:9
+  - yarn
+
+build: off
+build_script:
+  - standard --fix
+  - yarn run build-win64
+
+test_script:
+  - node --version
+  - yarn --version
+  - yarn run test
+
+artifacts:
+  - path: "dist\**\*.exe"
+    name: Vatron

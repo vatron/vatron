@@ -31,7 +31,7 @@ function createWindow() {
 
   mainWindow.setMenu(null)
 
-  mainWindow.webContents.openDevTools() // should be commented before building
+  //mainWindow.webContents.openDevTools() // should be commented before building
 }
 
 app.on('ready', createWindow)
