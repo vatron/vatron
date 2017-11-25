@@ -15,5 +15,5 @@ test_script:
   - yarn run test
 
 artifacts:
-  - path: "dist\**\*.exe"
+  - path: 'dist\**\*.exe'
     name: Vatron
