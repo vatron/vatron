@@ -46,7 +46,6 @@
     },
     "win": {
       "target": [
-        "nsis",
         "portable",
         "squirrel"
       ],
@@ -54,11 +53,6 @@
     },
     "dmg": {
       "artifactName": "${productName}.${ext}"
-    },
-    "nsis": {
-      "artifactName": "${productName}Installer.${ext}",
-      "installerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico"
     },
     "portable": {
       "artifactName": "${productName}Portable.${ext}"
