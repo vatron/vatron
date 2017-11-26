@@ -1,3 +1,4 @@
+/*globals google */
 const path = require('path')
 const {remote, shell} = require('electron')
 const Store = require('./js/store.js')
@@ -5,7 +6,9 @@ const Friends = require('./js/friends.js')
 const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
 const WindowControls = require('./js/window-controls.js')
+/*jshint -W079*/
 const Map = require('./js/map.js')
+/*jshint +W079*/
 const SVGs = require('./js/svgs.js')
 const Settings = require('./js/settings.js')
 
@@ -25,7 +28,7 @@ var
 
 var usingOnlineData = false
 $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
-  console.log("FIR Data loaded from GitLab repo")
+  console.log('FIR Data loaded from GitLab repo')
   firMappings = data
   usingOnlineData = true
   loadData()
@@ -48,8 +51,8 @@ console.log(friendsList)
 
 let svgs = new SVGs()
 let windowControls = new WindowControls($)
-let mSettings = new Settings()
-let settings = new Store({configName: 'settings'})
+let settings = new Settings()
+settings = new Store({configName: 'settings'})
 
 // wait for the application to load before trying to do things
 $(document).ready(function() {
@@ -86,13 +89,13 @@ function loadData() {
 
       var generalData = data.indexOf('!GENERAL:')
       var dataFrom = data.substring(generalData + 45, generalData + 60)
-      $('#data-time').html(dataFrom.substring(8,10) + ":" + dataFrom.substring(10,12) + "z")
-      generalData = "" // variables no longer used, so clear them
+      $('#data-time').html(dataFrom.substring(8,10) + ':' + dataFrom.substring(10,12) + 'z')
+      generalData = '' // variables no longer used, so clear them
 
-      var startClients = data.indexOf("!CLIENTS:") + 11 // +11 accounts for length of !CLIENTS: as well as newline and any other characters before the true beginning
-      var endClients = data.indexOf("!SERVERS:") - 7 // -7 serves similar purpose as above
+      var startClients = data.indexOf('!CLIENTS:') + 11 // +11 accounts for length of !CLIENTS: as well as newline and any other characters before the true beginning
+      var endClients = data.indexOf('!SERVERS:') - 7 // -7 serves similar purpose as above
       var clientsOnly = data.substring(startClients, endClients)
-      var clientsOnlySplit = clientsOnly.split("\n")
+      var clientsOnlySplit = clientsOnly.split('\n')
 
       for(var i = 0; i < clientsOnlySplit.length; i++) {
 
@@ -111,7 +114,7 @@ function loadData() {
         / 35           36                      37         38      39      40
         */
 
-        var clientSplit = clientsOnlySplit[i].split(":")
+        var clientSplit = clientsOnlySplit[i].split(':')
         if((clientSplit[37] >= dataFrom && willUpdate == true) || willUpdate == false) {
           var tmpToAdd = {
             callsign: clientSplit[0],
@@ -155,7 +158,7 @@ function loadData() {
         }
       }
     }
-  }).done(function(d) {
+  }).done(function() {
     updateMap()
   })
 }
@@ -167,7 +170,7 @@ function placeMarkers() {
 }
 
 function placeMarker(client) {
-  if(client.clientType == "PILOT") {
+  if(client.clientType == 'PILOT') {
     let icon = svgs.planeSVG(client.heading, parseInt(client.cid))
     if(Map.getZoom() < 4) icon = svgs.dotSVG(parseInt(client.cid))
     var marker = new google.maps.Marker({
@@ -190,8 +193,8 @@ function placeMarker(client) {
     `)
   }
 
-  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('CTR') != -1) {
-    var nameSplit = client.callsign.split("_")
+  if(client.clientType == 'ATC' && client.frequency != '199.998' && client.callsign.indexOf('CTR') != -1) {
+    var nameSplit = client.callsign.split('_')
     if(firMappings !== 'undefined' && firMappings.hasOwnProperty(nameSplit[0])) {
       var firDataUrl = path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`)
       if(usingOnlineData) firDataUrl = `https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
@@ -209,7 +212,7 @@ function placeMarker(client) {
     }
   }
 
-  if(client.clientType == "ATC" && client.frequency != "199.998" && (client.callsign.indexOf('APP') != -1 || client.callsign.indexOf('DEP') != -1)) {
+  if(client.clientType == 'ATC' && client.frequency != '199.998' && (client.callsign.indexOf('APP') != -1 || client.callsign.indexOf('DEP') != -1)) {
     var circle = new google.maps.Circle({
       fillColor: '#673AB7',
       strokeColor: '#512DA8',
@@ -218,12 +221,12 @@ function placeMarker(client) {
       center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
       radius: 80000 // ~50mi
     })
-    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    circle.addListener('click', () => { onOpenAtcInfo(client.callsign) })
     lclCircles.push(circle)
   }
 
-  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('TWR') != -1) {
-    var circle = new google.maps.Circle({
+  if(client.clientType == 'ATC' && client.frequency != '199.998' && client.callsign.indexOf('TWR') != -1) {
+    let circle = new google.maps.Circle({
       fillColor: '#03A9F4',
       strokeColor: '#0288D1',
       strokeWeight: 1,
@@ -231,12 +234,12 @@ function placeMarker(client) {
       center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
       radius: 32000 // ~20mi
     })
-    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    circle.addListener('click', () => { onOpenAtcInfo(client.callsign) })
     lclCircles.push(circle)
   }
 
-  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('GND') != -1) {
-    var circle = new google.maps.Circle({
+  if(client.clientType == 'ATC' && client.frequency != '199.998' && client.callsign.indexOf('GND') != -1) {
+    let circle = new google.maps.Circle({
       fillColor: '#FFC107',
       strokeColor: '#FFA000',
       strokeWeight: 1,
@@ -244,12 +247,12 @@ function placeMarker(client) {
       center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
       radius: 8000 // ~5mi
     })
-    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    circle.addListener('click', () => { onOpenAtcInfo(client.callsign) })
     lclCircles.push(circle)
   }
 
-  if(client.clientType == "ATC" && client.frequency != "199.998" && client.callsign.indexOf('DEL') != -1) {
-    var circle = new google.maps.Circle({
+  if(client.clientType == 'ATC' && client.frequency != '199.998' && client.callsign.indexOf('DEL') != -1) {
+    let circle = new google.maps.Circle({
       fillColor: '#607D8B',
       strokeColor: '#455A64',
       strokeWeight: 1,
@@ -257,7 +260,7 @@ function placeMarker(client) {
       center: {lat: parseFloat(client.lat), lng: parseFloat(client.lng)},
       radius: 4000 // ~2.5mi
     })
-    circle.addListener('click', (e) => { onOpenAtcInfo(client.callsign) })
+    circle.addListener('click', () => { onOpenAtcInfo(client.callsign) })
     lclCircles.push(circle)
   }
 
@@ -273,12 +276,12 @@ function placeMarker(client) {
 }
 
 function updateMap() {
-  for(var i = 0; i < clientMarkers.length; i++) {
+  for(let i = 0; i < clientMarkers.length; i++) {
     clientMarkers[i].setMap(null)
   }
   clientMarkers = []
 
-  for(var i = 0; i < lclCircles.length; i++) {
+  for(let i = 0; i < lclCircles.length; i++) {
     lclCircles[i].setMap(null)
   }
   lclCircles = []
@@ -385,7 +388,7 @@ $('#reloadData').on('click', () => {
 
 $(document).on('click', '#addFriend', (e) => {
   var cid = $(e.toElement).attr('data-cid')
-  console.log("friendsList: add friend " + cid)
+  console.log('friendsList: add friend ' + cid)
   friendsList.push(parseInt(cid))
   console.log(friendsList)
 })
@@ -401,7 +404,7 @@ $(document).on('click', 'a[href^="https"]', function(e) {
   shell.openExternal(this.href)
 })
 
-$(document).on('click', '#generatePosRep', function(e) {
+$(document).on('click', '#generatePosRep', function() {
   var next = $('#posNext').val()
   console.log(next)
   var nextTime = $('#posNextTime').val()
@@ -411,6 +414,6 @@ $(document).on('click', '#generatePosRep', function(e) {
   var mach = $('#posMach').val()
   var alt =  $('#posAlt').val()
 
-  posrep = new PosRep(next, nextTime, then, thenTime, third, mach, alt)
+  let posrep = new PosRep(next, nextTime, then, thenTime, third, mach, alt)
   $('#generatedPosRep').html(posrep.toString())
 })

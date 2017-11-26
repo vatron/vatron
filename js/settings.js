@@ -1,4 +1,3 @@
-const $ = jquery = require('jquery')
 const Store = require('./store.js')
 
 class Settings {
@@ -13,7 +12,7 @@ class Settings {
     $('#settingsRefreshInterval').val(this.settings.get('dataRefresh')/1000)
     $('#settingsRefreshInterval').on('change paste keyup', () => {
       this.settings.set('dataRefresh', $('#settingsRefreshInterval').val()*1000)
-      $('#saveStatus').html("Saved!")
+      $('#saveStatus').html('Saved!')
     })
   }
 }

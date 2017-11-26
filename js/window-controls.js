@@ -1,5 +1,4 @@
-const $ = jQuery = require('jquery')
-
+/*globals friends,friendsList,remote */
 class WindowControls {
   constructor(jquery) {
     this.$ = jquery

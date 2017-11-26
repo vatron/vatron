@@ -1,11 +1,13 @@
+/*globals google*/
 const SVGs = require('./svgs.js')
 var svgs = new SVGs()
 
 class InfoPane {
   buildATC(c, addFriendStr) {
     let name = c.name.split(' ')
+    /*jshint -W100*/
     let splitAtis = c.atis.split('^�') // meant to be that weird question mark character
-    let finalAtis = ""
+    let finalAtis = ''
     for(var i = 0; i < splitAtis.length; i++) {
       finalAtis += '<p class="atis">' + splitAtis[i] + '</p>'
     }
@@ -178,6 +180,7 @@ class InfoPane {
   }
 
   buildAirport(clients, code, apt) {
+    /*jshint unused:false  */
     clients.sort((a, b) => {
       if(a.depApt == code) return -1
       if(a.depApt != code) return 1

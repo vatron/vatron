@@ -1,11 +1,12 @@
+/*globals friends,google */
 class SVGs {
   planeSVG(rotationDeg, cid) {
+    var fill = '#ccc'
+    var stroke = '#eee'
+
     if(friends.isFriend(cid)) {
-      var fill = "#af9162"
-      var stroke = "#9B7C4D"
-    } else {
-      var fill = "#ccc"
-      var stroke = "#eee"
+      fill = '#af9162'
+      stroke = '#9B7C4D'
     }
 
     return {
@@ -20,10 +21,10 @@ class SVGs {
   }
 
   dotSVG(cid) {
+    var stroke = '#eee'
+
     if(friends.isFriend(cid)) {
-      var stroke = "#9B7C4D"
-    } else {
-      var stroke = "#eee"
+      stroke = '#9B7C4D'
     }
 
     return {
@@ -37,7 +38,7 @@ class SVGs {
   markerSVG() {
     return {
       path: 'm7.93077,20.46444c0,0 -11.21265,-17.51976 -0.30034,-17.61987c10.91231,-0.10011 0.30034,17.61987 0.30034,17.61987z',
-      strokeColor: "#44CC44",
+      strokeColor: '#44CC44',
       fillOpacity: 0,
       strokeOpacity: 1,
       strokeWeight: 3,

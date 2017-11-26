@@ -22,13 +22,13 @@ class Friends {
     this.friendsListJSON.set('friends', newList)
   }
 
-  set rebuild(newList) {
+  rebuild(newList) {
     this.friendsList = newList
   }
 
   // @return: boolean
   isFriend(id) {
-    return friendsList.includes(parseInt(id)) // parseInt makes sure it's an int no matter if we got an int in the first place
+    return this.friendsList.includes(parseInt(id)) // parseInt makes sure it's an int no matter if we got an int in the first place
   }
 }
 
