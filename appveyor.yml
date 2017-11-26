@@ -1,5 +1,8 @@
 version: 0.3.0.{build}
 
+cache:
+  - node_modules
+
 environment:
   GH_TOKEN:
     secure: 25lIq5iUz6o1FTDxaMPXz0B9dwJm7bPxiC3+ALhnLP1lB1vWZBi3oqn0OCDom/3a
