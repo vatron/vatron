@@ -21,7 +21,7 @@ artifacts:
   - path: 'dist\VatronInstaller.%APPVEYOR_BUILD_VERSION%.exe'
     name: installer
 
-  - path: 'dist\VatronPortable.%APPVEYOR_BUILD_VERSION%.exe',
+  - path: 'dist\VatronPortable.%APPVEYOR_BUILD_VERSION%.exe'
     name: portable
 
 deploy:
