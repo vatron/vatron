@@ -26,6 +26,7 @@ artifacts:
 
 deploy:
 - provider: GitHub
+  tag: 0.3.0
   auth_token:
     secure: ciXMGY38RIpZz85UAe8Hnddb/mMk4yj+lFo5pYd0RUYG461FJdBjSHiCiyw+8OD2
   artifact: squirrel,installer,portable
