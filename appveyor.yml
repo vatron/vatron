@@ -17,4 +17,4 @@ test_script:
   - yarn run build-win64
 
 shallow_clone: true
-close_depth: 1
+clone_depth: 1
