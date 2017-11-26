@@ -8,6 +8,7 @@ build: off
 build_script:
   - yarn test
   - yarn run build-win64
+  - ps: rd -r "dist\win-unpacked"
 
 test_script:
   - node --version
@@ -18,9 +19,6 @@ artifacts:
   - path: 'dist/squirrel-windows/VatronSquirrel.exe'
     name: squirrel
 
-  - path: 'dist/VatronInstaller.exe'
-    name: installer
-
   - path: 'dist/VatronPortable.exe'
     name: portable
 
@@ -29,5 +27,5 @@ deploy:
   tag: 0.3.0
   auth_token:
     secure: ciXMGY38RIpZz85UAe8Hnddb/mMk4yj+lFo5pYd0RUYG461FJdBjSHiCiyw+8OD2
-  artifact: squirrel,installer,portable
+  artifact: squirrel,portable
   draft: true

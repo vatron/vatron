@@ -13,8 +13,10 @@ for(let key in geojsonIndex) {
 
 for(let key in geojsonIndex) {
   let jsonPath = path.join(__dirname, '..', 'fir_data/', geojsonIndex[key] +'.json')
-  console.log('Testing in fir_data key ' + key + '...')
-  if(GJV.valid(JSON.parse(fs.readFileSync(jsonPath)))) {
-    console.log('valid')
-  } else throw 'Invalid JSON file: ' + key
+  let foundInvalid = false
+  if(!GJV.valid(JSON.parse(fs.readFileSync(jsonPath)))) {
+    console.log('Invalid JSON file: ' + key)
+    foundInvalid = true
+  }
+  if(foundInvalid) throw 'GeoJSON failed tests.'
 }
