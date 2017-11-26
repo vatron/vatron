@@ -1,4 +1,4 @@
-version: 0.3.0
+version: 0.3.0.{build}
 
 install:
   - ps: Install-Product node $env:9
@@ -15,13 +15,13 @@ test_script:
   - yarn test
 
 artifacts:
-  - path: 'dist/Vatron Setup %APPVEYOR_BUILD_VERSION%.exe'
+  - path: 'dist/squirrel-windows/VatronSetup.exe'
     name: squirrel
 
-  - path: 'dist/VatronInstaller.%APPVEYOR_BUILD_VERSION%.exe'
+  - path: 'dist/VatronInstaller.exe'
     name: installer
 
-  - path: 'dist/VatronPortable.%APPVEYOR_BUILD_VERSION%.exe'
+  - path: 'dist/VatronPortable.exe'
     name: portable
 
 deploy:

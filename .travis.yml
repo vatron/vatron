@@ -16,5 +16,6 @@ deploy:
   skip_cleanup: true
   draft: true
   tag_name: $TRAVIS_TAG
+  overwrite: true
   on:
-    tags: true
+    repo: andrewward2001/vatron

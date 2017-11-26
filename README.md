@@ -1,4 +1,7 @@
 # Vatron
+[![Build status](https://ci.appveyor.com/api/projects/status/d1c359iufk1vi1sq?svg=true)](https://ci.appveyor.com/project/andrewward2001/vatron)
+[![Build Status](https://travis-ci.org/andrewward2001/vatron.svg?branch=master)](https://travis-ci.org/andrewward2001/vatron)
+
 Vatron is an open source, fast, and accesable [VATSIM](https://www.vatsim.net/) radar client built with [Electron](https://electron.atom.io/).
 
 ## Installation  

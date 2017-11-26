@@ -52,14 +52,15 @@
       "icon": "build/icon.ico"
     },
     "nsis": {
-      "artifactName": "${productName}Installer.${version}.${ext}",
+      "artifactName": "${productName}Installer.${ext}",
       "installerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico"
     },
     "portable": {
-      "artifactName": "${productName}Portable.${version}.${ext}"
+      "artifactName": "${productName}Portable.${ext}"
     },
     "squirrelWindows": {
+      "artifactName": "VatronSquirrel.${ext}",
       "iconUrl": "https://gitlab.com/andrewward2001/vatron/blob/master/build/icon.ico"
     },
     "files": [
