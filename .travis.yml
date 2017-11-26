@@ -14,5 +14,7 @@ deploy:
     - dist/Vatron-$TRAVIS_TAG-mac.zip
     - dist/Vatron-$TRAVIS_TAG.dmg
   skip_cleanup: true
+  draft: true
+  tag_name: $TRAVIS_TAG
   on:
     tags: true
