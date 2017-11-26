@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- node
+os: osx
+install: yarn
+script:
+- yarn test
+- yarn run build-darwin
+deploy:
+  provider: releases
+  api_key:
+    secure: OlbfUeCzzfdPO/m094pXZ9zPEwH9A/GUKNb4SGTwzIyAD5NAiZ8cydornGuKeR6sgeyDgwyLQP/0sx+GCzNo8853EShAiECMyImCcNj7rxY4Y4ggURZlxe8UFbaBA+YHKIG+wAIOdmwn7MuxeOSpHZoh/3U0Tz/7GbGKsWbX0cwbuKO/LFm3ZJDhJ7/MTclJEtVaKitRZZqm0cfJFgg8fH8AUJTtDAnYRoG1k1u/jL/GIgosHM2EA2wph//Is3mfZYNNfPZILKuMkwjnAiXohuHjeP5MBwteS9KPCG2bCIwr3Urp68UmDu0x3who3MKPGUNiKIyHHleTrUnFzms8zkO3pXMPBhU5KgtvFFzv9671EO64Wxl/s4EobPt2p0F4U1tK1YvfKDQQVBoC2dvo+hTUZ6fbgaOWKOA7pCOlzreL+fdCdX0ZOTIo7+9V4FLoE7KQIc326apG4ybfHQ1XDgk16SRa2DeH0bqT3j9mTcjpxw/qlveWmiosb8NEYDlC5PB4VeigcTfBblKeT0oobrPacVfmjCJ9PWikMZi5tLy2ePv5gxvyI2pSUHNhKkMMeOUoJ1msN02jwVbCMDttqeomHoBfQ6cXdOMqe/lMBcWUxaULSyDYTGfsKAYkCoLrq0nzpIVKllmwBnK99WW8zRmAuFYNxvXWqEqX0aRHi5U=
+  file:
+    - dist/*.zip
+    - dist/*.dmg
+  on:
+    repo: andrewward2001/vatron
