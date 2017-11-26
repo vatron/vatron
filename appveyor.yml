@@ -6,13 +6,13 @@ install:
 
 build: off
 build_script:
-  - yarn run jslint 'js/**/*.js'
+  - yarn test
   - yarn run build-win64
 
 test_script:
   - node --version
   - yarn --version
-  - yarn run test
+  - yarn test
 
 artifacts:
   - path: 'dist\**\*.exe'
