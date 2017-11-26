@@ -1,23 +1,20 @@
 version: 0.3.0.{build}
 
+environment:
+  GH_TOKEN:
+    secure: 25lIq5iUz6o1FTDxaMPXz0B9dwJm7bPxiC3+ALhnLP1lB1vWZBi3oqn0OCDom/3a
+
 install:
   - ps: Install-Product node $env:9
   - yarn
 
 build: off
-build_script:
-  - yarn test
-  - yarn run build-win64
-  - ps: rd -r "dist\win-unpacked"
 
 test_script:
   - node --version
   - yarn --version
   - yarn test
+  - yarn run build-win64
 
-artifacts:
-  - path: 'dist/squirrel-windows/VatronSquirrel.exe'
-    name: squirrel
-
-  - path: 'dist/VatronPortable.exe'
-    name: portable
+shallow_clone: true
+close_depth: 1
