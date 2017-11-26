@@ -1,4 +1,4 @@
-version: 0.2.0.{build}
+version: 0.2.0
 
 install:
   - ps: Install-Product node $env:9
@@ -15,5 +15,18 @@ test_script:
   - yarn test
 
 artifacts:
-  - path: 'dist\**\*.exe'
-    name: Vatron
+  - path: 'dist\Vatron Setup %APPVEYOR_BUILD_VERSION%.exe'
+    name: squirrel
+
+  - path: 'dist\VatronInstaller.%APPVEYOR_BUILD_VERSION%.exe'
+    name: installer
+
+  - path: 'dist\VatronPortable.%APPVEYOR_BUILD_VERSION%.exe',
+    name: portable
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: ciXMGY38RIpZz85UAe8Hnddb/mMk4yj+lFo5pYd0RUYG461FJdBjSHiCiyw+8OD2
+  artifact: squirrel,installer,portable
+  draft: true
