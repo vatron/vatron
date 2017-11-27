@@ -17,7 +17,7 @@ settings.set('dataRefresh', 60000) // forces Store to save the json file
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 1010, height: 700, minWidth: 1010, minHeight: 56, frame: false})
+  mainWindow = new BrowserWindow({width: 1010, height: 700, minWidth: 1010, minHeight: 56, frame: false, backgroundColor: '#343a40'})
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
