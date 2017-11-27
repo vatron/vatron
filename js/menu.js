@@ -114,6 +114,8 @@ if (process.platform === 'darwin') {
     {role: 'front'}
   ]
 
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  $('#menuBarNav').remove()
 }
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu) // this allows the key combos to work on non-darwin systems, while the menu bar remains hidden

@@ -29,15 +29,15 @@ class WindowControls {
 
     if(process.platform != 'darwin') {
       $('#window-controls-darwin').remove()
-      $('#navbarNav>ul').append(`
-        <li class="nav-item ml-md-auto">
-          <a class="nav-link" href="#" id="minimize">&#9866;</a>
+      $('#controlsNav>ul').append(`
+        <li class="nav-item ml-auto">
+          <a class="nav-link window-control" href="#" id="minimize">&#9866;</a>
         </li>
-        <li class="nav-item ml-md-4">
-          <a class="nav-link" href="#" id="maximize">&#9744;</a>
+        <li class="nav-item">
+          <a class="nav-link window-control" href="#" id="maximize">&#9744;</a>
         </li>
-        <li class="nav-item ml-md-4">
-          <a class="nav-link" href="#" id="quit">&#9587;</a>
+        <li class="nav-item">
+          <a class="nav-link window-control" href="#" id="quit">&#9587;</a>
         </li>
       `)
     }

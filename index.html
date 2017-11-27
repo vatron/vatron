@@ -10,6 +10,38 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
+    <nav class="navbar navbar-dark bg-dark menu-bar" id="menuBarNav">
+      <div id="controlsNav" style="display: flex; flex-basis: auto; flex-grow: 1;">
+        <ul class="navbar-nav" style="flex-direction: row">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" href="#">File</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#" onclick="(() => {$('#settings').modal('show')})()">Settings<span class="keys">Ctrl+,</span></a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').remote.getCurrentWindow().close()})()">Exit</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" href="#">View</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#" onclick="(() => {updateMap()})()">Reload Data<span class="keys">Ctrl+R</span></a>
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').remote.getCurrentWindow().reload()})()">Soft Restart<span class="keys">Ctrl+Shift+R</span></a>
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').remote.getCurrentWindow().webContents.openDevTools()})()">Toggle Developer Tools<span class="keys">Ctrl+Shift+I</span></a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" href="#">Help</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').shell.openExternal('https://andrewward2001.com/vatron/')})()">Vatron Website</a>
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').shell.openExternal('https://github.com/andrewward2001/vatron')})()">Vatron Repository</a>
+              <a class="dropdown-item" href="#" onclick="(() => {require('electron').shell.openExternal('https://github.com/andrewward2001/vatron/issues')})()">File a Bug Report</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" onclick="(() => {$('#about').modal('show')})()">About Vatron</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="traffic-lights" id="window-controls-darwin">
         <button class="traffic-light traffic-light-close" id="quit"></button>
