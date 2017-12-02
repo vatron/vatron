@@ -210,7 +210,7 @@ class InfoPane {
     return `
     <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
       <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9587;</a>
-      <h4 class="mb-4 mt-1">ATC Info</h4>
+      <h4 class="mb-4 mt-1">Airport Info</h4>
       <div class="card mb-3 bg-dark">
         <div class="card-body">
           <h4 class="card-title">${code}</h4>
