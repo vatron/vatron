@@ -28,7 +28,6 @@ var
 
 var usingOnlineData = false
 $.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
-  console.log('FIR Data loaded from GitLab repo')
   firMappings = data
   usingOnlineData = true
   loadData()
@@ -47,7 +46,6 @@ $.getJSON(path.join(__dirname, '/navdata/airports.json'), function(data) {
 
 let friends = new Friends()
 let friendsList = friends.list
-console.log(friendsList)
 
 let svgs = new SVGs()
 let windowControls = new WindowControls($)
@@ -79,7 +77,6 @@ google.maps.event.addListener(Map, 'zoom_changed', function() {
 var willUpdate = false
 function loadData() {
   var serv = Math.floor(Math.random()*4)
-  console.log(`Using data from: ${vatsimDataServers[serv]}`)
   $.ajax({
     type: 'GET',
     url: vatsimDataServers[serv],
@@ -200,7 +197,6 @@ function placeMarker(client) {
       if(usingOnlineData) firDataUrl = `https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
       $.getJSON(firDataUrl, function(json) {
         json.features[0].properties.callsign = client.callsign
-        console.log(json.features[0].properties)
         Map.data.addGeoJson(json)
         Map.data.setStyle({
           strokeWeight: 1
@@ -289,6 +285,8 @@ function updateMap() {
   Map.data.forEach(function(feature) {
     Map.data.remove(feature)
   })
+
+  $('#friendsListAppend').empty()
 
   placeMarkers()
 }
@@ -388,9 +386,7 @@ $('#reloadData').on('click', () => {
 
 $(document).on('click', '#addFriend', (e) => {
   var cid = $(e.toElement).attr('data-cid')
-  console.log('friendsList: add friend ' + cid)
   friendsList.push(parseInt(cid))
-  console.log(friendsList)
 })
 
 $(document).on('click', '#rmFriend', (e) => {
@@ -406,7 +402,6 @@ $(document).on('click', 'a[href^="https"]', function(e) {
 
 $(document).on('click', '#generatePosRep', function() {
   var next = $('#posNext').val()
-  console.log(next)
   var nextTime = $('#posNextTime').val()
   var then = $('#posThen').val()
   var thenTime = $('#posThenTime').val()
