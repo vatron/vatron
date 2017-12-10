@@ -174,7 +174,7 @@ function placeMarkers() {
 function placeMarker(client) {
   if(client.clientType == 'PILOT') {
     let icon = svgs.planeSVG(client.heading, parseInt(client.cid))
-    if(Map.getZoom() < 4) icon = svgs.dotSVG(parseInt(client.heading), parseInt(client.cid))
+    if(Map.getZoom() < 4) icon = svgs.dotSVG(parseInt(client.cid))
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(client.lat, client.lng),
       icon: icon,
@@ -298,13 +298,13 @@ function updateMap() {
 
 function setMarkerDots() {
   for(var i = 0; i < clientMarkers.length; i++) {
-    clientMarkers[i].setIcon(svgs.dotSVG(parseInt(clientMarkers[i].getIcon().rotation), parseInt(clientMarkers[i].getTitle())))
+    clientMarkers[i].setIcon(svgs.dotSVG(parseInt(clientMarkers[i].getTitle())))
   }
 }
 
 function setMarkerPlanes() {
   for(var i = 0; i < clientMarkers.length; i++) {
-    clientMarkers[i].setIcon(svgs.planeSVG(parseInt(clientMarkers[i].getIcon().rotation), parseInt(clientMarkers[i].getTitle())))
+    clientMarkers[i].setIcon(svgs.planeSVG(parseInt(clientMarkers[i].getTitle())))
   }
 }
 
