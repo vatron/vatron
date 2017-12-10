@@ -115,6 +115,7 @@ if (process.platform === 'darwin') {
   ]
 
   $('#menuBarNav').remove()
+  $('.row.fluid').css('height', 'calc(100% - 56px)')
 }
 
 const menu = Menu.buildFromTemplate(template)
