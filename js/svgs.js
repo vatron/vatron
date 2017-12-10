@@ -20,7 +20,7 @@ class SVGs {
     }
   }
 
-  dotSVG(cid) {
+  dotSVG(rotationDeg, cid) {
     var stroke = '#eee'
 
     if(friends.isFriend(cid)) {
@@ -31,7 +31,8 @@ class SVGs {
       path: 'M-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0',
       fillColor: stroke,
       fillOpacity: 1,
-      strokeOpacity: 0
+      strokeOpacity: 0,
+      rotation: parseInt(rotationDeg)
     }
   }
 
