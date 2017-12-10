@@ -66,6 +66,11 @@ $(document).ready(function() {
   })
 
   $('#version').html(remote.app.getVersion())
+
+  let mapTheme
+  $.getJSON(path.join(__dirname, '/themes/' + settings.get('mapTheme') + '.json'), (data) => {
+    Map.setOptions(data)
+  })
 });
 
 // change markers based on zoom level

@@ -9,10 +9,10 @@ const Store = require('./js/store.js')
 const settings = new Store({
   configName: 'settings',
   defaults: {
-    dataRefresh: 60000
+    dataRefresh: 60000,
+    mapTheme: 'dark'
   }
 })
-settings.set('dataRefresh', 60000) // forces Store to save the json file
 
 let mainWindow
 
