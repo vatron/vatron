@@ -5,6 +5,12 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 const Store = require('./js/store.js')
+const fs = require('fs')
+
+// fixes a bug where vatron would error out on first start up
+let settingsPath = app.getPath('userData')
+if(!fs.existsSync(settingsPath))
+  fs.mkdirSync(settingsPath)
 
 const settings = new Store({
   configName: 'settings',
