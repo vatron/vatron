@@ -13,33 +13,33 @@ const SVGs = require('./js/svgs.js')
 const Settings = require('./js/settings.js')
 
 // all available servers that serve vatsim network data
-var vatsimDataServers = [
+let vatsimDataServers = [
   'http://info.vroute.net/vatsim-data.txt',
   'http://data.vattastic.com/vatsim-data.txt',
   'http://vatsim.aircharts.org/vatsim-data.txt',
   'http://wazzup.flightoperationssystem.com/vatsim/vatsim-data.txt'
 ]
-var
+let
   vatsimClients = [],
   clientMarkers = [],
   lclCircles = [],
   info,
   firMappings
 
-var usingOnlineData = false
-$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', function(data) {
+let usingOnlineData = false
+$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', (data) => {
   firMappings = data
   usingOnlineData = true
   loadData()
-}).fail(function() {
-  firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), function(data) {
+}).fail(() => {
+  firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), (data) => {
     firMappings = data
     loadData()
   })
 })
 
-var airports
-$.getJSON(path.join(__dirname, '/navdata/airports.json'), function(data) {
+let airports
+$.getJSON(path.join(__dirname, '/navdata/airports.json'), (data) => {
   airports = data
   $('#aptCycle').html(airports._info.cycle)
 })
@@ -53,9 +53,9 @@ let settings = new Settings()
 settings = new Store({configName: 'settings'})
 
 // wait for the application to load before trying to do things
-$(document).ready(function() {
+$(document).ready(() => {
   windowControls.start()
-  setInterval(function() {
+  setInterval(() => {
     loadData()
   }, parseInt(settings.get('dataRefresh')))
 
@@ -73,32 +73,32 @@ $(document).ready(function() {
 });
 
 // change markers based on zoom level
-google.maps.event.addListener(Map, 'zoom_changed', function() {
+google.maps.event.addListener(Map, 'zoom_changed', () => {
   if(Map.getZoom() >= 4) setMarkerPlanes()
   if(Map.getZoom() < 4) setMarkerDots()
 })
 
-var willUpdate = false
+let willUpdate = false
 function loadData() {
-  var serv = Math.floor(Math.random()*4)
+  let serv = Math.floor(Math.random()*4)
   $.ajax({
     type: 'GET',
     url: vatsimDataServers[serv],
     dataType: 'text',
-    success: function(data) {
+    success: (data) => {
       vatsimClients = [] // ensures the clients array doesn't get infinitely large
 
-      var generalData = data.indexOf('!GENERAL:')
-      var dataFrom = data.substring(generalData + 45, generalData + 60)
+      let generalData = data.indexOf('!GENERAL:')
+      let dataFrom = data.substring(generalData + 45, generalData + 60)
       $('#data-time').html(dataFrom.substring(8,10) + ':' + dataFrom.substring(10,12) + 'z')
       generalData = '' // variables no longer used, so clear them
 
-      var startClients = data.indexOf('!CLIENTS:') + 11 // +11 accounts for length of !CLIENTS: as well as newline and any other characters before the true beginning
-      var endClients = data.indexOf('!SERVERS:') - 7 // -7 serves similar purpose as above
-      var clientsOnly = data.substring(startClients, endClients)
-      var clientsOnlySplit = clientsOnly.split('\n')
+      let startClients = data.indexOf('!CLIENTS:') + 11 // +11 accounts for length of !CLIENTS: as well as newline and any other characters before the true beginning
+      let endClients = data.indexOf('!SERVERS:') - 7 // -7 serves similar purpose as above
+      let clientsOnly = data.substring(startClients, endClients)
+      let clientsOnlySplit = clientsOnly.split('\n')
 
-      for(var i = 0; i < clientsOnlySplit.length; i++) {
+      for(let i = 0; i < clientsOnlySplit.length; i++) {
 
         /* Annotated Client Entry:
         / callsign:cid:realname:clienttype:frequency:latitude:longitude:altitude:groundspeed:planned_aircraft: --> (CONTD.)
@@ -115,9 +115,9 @@ function loadData() {
         / 35           36                      37         38      39      40
         */
 
-        var clientSplit = clientsOnlySplit[i].split(':')
+        let clientSplit = clientsOnlySplit[i].split(':')
         if((clientSplit[37] >= dataFrom && willUpdate == true) || willUpdate == false) {
-          var tmpToAdd = {
+          let tmpToAdd = {
             callsign: clientSplit[0],
             cid: clientSplit[1],
             name: clientSplit[2],
@@ -159,28 +159,27 @@ function loadData() {
         }
       }
     }
-  }).done(function() {
+  }).done(() => {
     updateMap()
   })
 }
 
 function placeMarkers() {
-  vatsimClients.forEach(function(client) {
+  vatsimClients.forEach((client) => {
     placeMarker(client)
   })
 }
 
 function placeMarker(client) {
   if(client.clientType == 'PILOT') {
-    let icon = svgs.planeSVG(client.heading, parseInt(client.cid))
-    if(Map.getZoom() < 4) icon = svgs.dotSVG(parseInt(client.heading), parseInt(client.cid))
-    var marker = new google.maps.Marker({
+    let icon = Map.getZoom() < 4 ? svgs.dotSVG(parseInt(client.heading), parseInt(client.cid)) : svgs.planeSVG(client.heading, parseInt(client.cid))
+    let marker = new google.maps.Marker({
       position: new google.maps.LatLng(client.lat, client.lng),
       icon: icon,
       map: Map,
       title: client.cid
     })
-    marker.addListener('click', function() { onOpenPilotInfo(client) }) // breaks if you pass addListener the onOpenInfo function directly
+    marker.addListener('click', () => { onOpenPilotInfo(client) }) // breaks if you pass addListener the onOpenInfo function directly
     client.marker = marker
     clientMarkers.push(marker)
 
@@ -195,17 +194,17 @@ function placeMarker(client) {
   }
 
   if(client.clientType == 'ATC' && client.frequency != '199.998' && client.callsign.indexOf('CTR') != -1) {
-    var nameSplit = client.callsign.split('_')
+    let nameSplit = client.callsign.split('_')
     if(firMappings !== 'undefined' && firMappings.hasOwnProperty(nameSplit[0])) {
-      var firDataUrl = path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`)
+      let firDataUrl = path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`)
       if(usingOnlineData) firDataUrl = `https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
-      $.getJSON(firDataUrl, function(json) {
+      $.getJSON(firDataUrl, (json) => {
         json.features[0].properties.callsign = client.callsign
         Map.data.addGeoJson(json)
         Map.data.setStyle({
           strokeWeight: 1
         })
-        Map.data.addListener('click', function(e) { onOpenAtcInfo(e.feature.getProperty('callsign')) })
+        Map.data.addListener('click', (e) => { onOpenAtcInfo(e.feature.getProperty('callsign')) })
       })
     } else if(firMappings === 'undefined') {
       placeMarker(client)
@@ -213,7 +212,7 @@ function placeMarker(client) {
   }
 
   if(client.clientType == 'ATC' && client.frequency != '199.998' && (client.callsign.indexOf('APP') != -1 || client.callsign.indexOf('DEP') != -1)) {
-    var circle = new google.maps.Circle({
+    let circle = new google.maps.Circle({
       fillColor: '#673AB7',
       strokeColor: '#512DA8',
       strokeWeight: 1,
@@ -286,7 +285,7 @@ function updateMap() {
   }
   lclCircles = []
 
-  Map.data.forEach(function(feature) {
+  Map.data.forEach((feature) => {
     Map.data.remove(feature)
   })
 
@@ -296,28 +295,25 @@ function updateMap() {
 }
 
 function setMarkerDots() {
-  for(var i = 0; i < clientMarkers.length; i++) {
+  for(let i = 0; i < clientMarkers.length; i++) {
     clientMarkers[i].setIcon(svgs.dotSVG(parseInt(clientMarkers[i].getIcon().rotation), parseInt(clientMarkers[i].getTitle())))
   }
 }
 
 function setMarkerPlanes() {
-  for(var i = 0; i < clientMarkers.length; i++) {
+  for(let i = 0; i < clientMarkers.length; i++) {
     clientMarkers[i].setIcon(svgs.planeSVG(parseInt(clientMarkers[i].getIcon().rotation), parseInt(clientMarkers[i].getTitle())))
   }
 }
 
-var isAlreadyOpen = false;
+let isAlreadyOpen = false;
 function onOpenPilotInfo(c) {
   if(!isAlreadyOpen){
     isAlreadyOpen = true
 
-    var addFriendStr
-    if(!friends.isFriend(c.cid)) {
-      addFriendStr = `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
-    } else {
-      addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
-    }
+    let addFriendStr = friends.isFriend(c.cid) ?
+      `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>` :
+      `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
 
     info = new InfoPane()
 
@@ -333,16 +329,13 @@ function onOpenPilotInfo(c) {
 function onOpenAtcInfo(n) {
   if(!isAlreadyOpen){
     isAlreadyOpen = true
-    var c = vatsimClients.find(function(element) {
+    let c = vatsimClients.find((element) => {
       return element.callsign == n
     })
 
-    var addFriendStr
-    if(!friends.isFriend(c.cid)) {
-      addFriendStr = `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
-    } else {
-      addFriendStr = `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>`
-    }
+    let addFriendStr = friends.isFriend(c.cid) ?
+      `<a href="#" id="rmFriend" data-cid="${c.cid}" class="card-link">Remove Friend</a>` :
+      `<a href="#" id="addFriend" data-cid="${c.cid}" class="card-link">Add Friend</a>`
 
     info = new InfoPane()
 
@@ -359,7 +352,7 @@ function onOpenAirportInfo(code, apt) {
   if(!isAlreadyOpen){
     isAlreadyOpen = true
 
-    var c = vatsimClients.filter(element => (element.depApt == code || element.arrApt == code))
+    let c = vatsimClients.filter(element => (element.depApt == code || element.arrApt == code))
 
     info = new InfoPane()
 
@@ -389,29 +382,29 @@ $('#reloadData').on('click', () => {
 })
 
 $(document).on('click', '#addFriend', (e) => {
-  var cid = $(e.toElement).attr('data-cid')
+  let cid = $(e.toElement).attr('data-cid')
   friendsList.push(parseInt(cid))
 })
 
 $(document).on('click', '#rmFriend', (e) => {
-  var cid = $(e.toElement).attr('data-cid')
-  var index = friendsList.indexOf(parseInt(cid))
+  let cid = $(e.toElement).attr('data-cid')
+  let index = friendsList.indexOf(parseInt(cid))
   friendsList.splice(index, 1)
 })
 
-$(document).on('click', 'a[href^="https"]', function(e) {
+$(document).on('click', 'a[href^="https"]', (e) => {
   e.preventDefault()
   shell.openExternal(this.href)
 })
 
-$(document).on('click', '#generatePosRep', function() {
-  var next = $('#posNext').val()
-  var nextTime = $('#posNextTime').val()
-  var then = $('#posThen').val()
-  var thenTime = $('#posThenTime').val()
-  var third = $('#posThird').val()
-  var mach = $('#posMach').val()
-  var alt =  $('#posAlt').val()
+$(document).on('click', '#generatePosRep', () => {
+  let next = $('#posNext').val()
+  let nextTime = $('#posNextTime').val()
+  let then = $('#posThen').val()
+  let thenTime = $('#posThenTime').val()
+  let third = $('#posThird').val()
+  let mach = $('#posMach').val()
+  let alt =  $('#posAlt').val()
 
   let posrep = new PosRep(next, nextTime, then, thenTime, third, mach, alt)
   $('#generatedPosRep').html(posrep.toString())

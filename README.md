@@ -4,10 +4,11 @@
 
 Vatron is an open source, fast, and accesable [VATSIM](https://www.vatsim.net/) radar client built with [Electron](https://electron.atom.io/).
 
-## Installation  
+## Install from source
 ```bash
 # Clone the repo
-https://gitlab.com/andrewward2001/vatron.git
+git clone https://gitlab.com/andrewward2001/vatron.git
+# Enter vatron folder
 cd vatron
 # Install dependencies:
 ```
@@ -32,7 +33,7 @@ npm start
 ```
 
 ## Build
-I've taken care to make sure that building is as easy as possible on whatever platform you're using  
+I've taken care to make sure that building is as easy as possible on whatever platform you're using.  
 Please see [electron-builder](https://www.electron.build/) documentation for extra information on building Vatron
 
 ### macOS

@@ -8,7 +8,7 @@ class InfoPane {
     /*jshint -W100*/
     let splitAtis = c.atis.split('^�') // meant to be that weird question mark character
     let finalAtis = ''
-    for(var i = 0; i < splitAtis.length; i++) {
+    for(let i = 0; i < splitAtis.length; i++) {
       finalAtis += '<p class="atis">' + splitAtis[i] + '</p>'
     }
 
@@ -54,7 +54,7 @@ class InfoPane {
       map: Map,
       title: c.depApt
     })
-    this.aptFrom.addListener('click', function() {
+    this.aptFrom.addListener('click', () => {
       aptCallback(c.depApt, airports[c.depApt])
     })
 
@@ -187,8 +187,8 @@ class InfoPane {
       return 0
     })
 
-    var c = ''
-    for(var i = 0; i < clients.length; i++) {
+    let c = ''
+    for(let i = 0; i < clients.length; i++) {
       c += `
         <tr>
           <td>
