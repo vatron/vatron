@@ -7,7 +7,7 @@ Vatron is an open source, fast, and accesable [VATSIM](https://www.vatsim.net/) 
 ## Install from source
 ```bash
 # Clone the repo
-git clone https://gitlab.com/andrewward2001/vatron.git
+git clone https://gitlab.com/vatron/vatron.git
 # Enter vatron folder
 cd vatron
 # Install dependencies:

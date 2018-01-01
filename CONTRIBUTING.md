@@ -6,13 +6,13 @@ Head over to the [Issues](https://github.com/andrewward2001/vatron/issues) page 
 ### Bugs
 When submitting a bug, please include as much information as possible, especially
 * Version of vatron
-* Operating system and its version (in the case in Windows 10, please include version name (i.e., Fall Creators Update))
-* The issue that arose, what caused it (steps leading up to it), and what you expected to happen
-Other things that can help out
+* Operating system and its version (in the case of Windows 10, please include version name (i.e., Fall Creators Update))
+* The issue that arose, what caused it (steps leading up to it), and what you expected to happen  
+Other things that can help out  
 * Screenshots (GIFs can be helpful)
 * Errors
   * Popup window
-  * Console (use View -> Toggle Developer Tools or the shortcut Ctrl+Shift+I (Cmd+Shift+I on macOS))
+  * Console (use View -> Toggle Developer Tools or the shortcut Ctrl+Shift+I (Cmd+Shift+I on macOS))  
 Please check out existing open or closed issues to see if your issue has been resolved or if someone already found it.
 
 ### Suggestions
