@@ -2,7 +2,7 @@
 const path = require('path')
 const {remote, shell} = require('electron')
 const Store = require('./js/store.js')
-const Friends = require('./js/friends.js')
+import Friends from 'friends'
 const InfoPane = require('./js/infopane.js')
 const PosRep = require('./js/posrep.js')
 const WindowControls = require('./js/window-controls.js')

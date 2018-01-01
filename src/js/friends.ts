@@ -1,6 +1,9 @@
-const Store = require('./store.js')
+import Store from './store'
 
-class Friends {
+export default class Friends {
+  private friendsListJSON: Store
+  private friendsList: any
+
   constructor() {
     this.friendsListJSON = new Store({
       configName: 'friends-list',
@@ -14,22 +17,19 @@ class Friends {
     this.friendsList = this.friendsListJSON.get('friends')
   }
 
-  get list() {
+  public get() {
     return this.friendsList
   }
 
-  set(newList) {
+  public set(newList: object): void {
     this.friendsListJSON.set('friends', newList)
   }
 
-  rebuild(newList) {
+  public rebuild(newList: object): void {
     this.friendsList = newList
   }
 
-  // @return: boolean
-  isFriend(id) {
-    return this.friendsList.includes(parseInt(id)) // parseInt makes sure it's an int no matter if we got an int in the first place
+  isFriend(id: number): boolean {
+    return this.friendsList.includes(id)
   }
 }
-
-module.exports = Friends
