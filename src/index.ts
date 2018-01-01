@@ -6,7 +6,7 @@ import * as url from 'url'
 import Store from './js/store.js'
 
 // fixes a bug where vatron would error out on first start up
-const settingsPath = app.getPath('userData')
+const settingsPath: string = app.getPath('userData')
 if(!fs.existsSync(settingsPath)) {
   fs.mkdirSync(settingsPath)
 }
@@ -21,7 +21,7 @@ const settings: any = new Store({
 
 let mainWindow: Electron.BrowserWindow
 
-function createWindow() {
+function createWindow(): void {
   mainWindow = new BrowserWindow({
     backgroundColor: '#343a40',
     frame: false,
