@@ -4,7 +4,7 @@
   "description": "An open source, fast, and accessible VATSIM radar client built with Electron",
   "main": "./comp/index.js",
   "scripts": {
-    "test": "tslint -c tslint.json -p tsconfig.json && yarn jshint js/ && node test/test.js",
+    "test": "tslint -c tslint.json -p tsconfig.json && yarn jshint src/js/ && node test/test.js",
     "ts": "tslint -c tslint.json -p tsconfig.json && tsc",
     "ts:watch": "yarn ts && tsc -w",
     "start": "tsc && electron ./comp/index.js",
