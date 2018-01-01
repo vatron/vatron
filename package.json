@@ -2,10 +2,12 @@
   "name": "vatron",
   "version": "0.3.0",
   "description": "An open source, fast, and accessible VATSIM radar client built with Electron",
-  "main": "index.js",
+  "main": "./comp/index.js",
   "scripts": {
-    "test": "yarn jshint js/ && node test/test.js",
-    "start": "electron .",
+    "test": "tslint -c tslint.json -p tsconfig.json && yarn jshint js/ && node test/test.js",
+    "ts": "tslint -c tslint.json -p tsconfig.json && tsc",
+    "ts:watch": "yarn ts && tsc -w",
+    "start": "tsc && electron ./comp/index.js",
     "build-win64": "electron-builder --x64",
     "build-darwin": "electron-builder --x64 --mac",
     "make-navdata": "node navdata/airports_parse.js < navdata/airports.txt && node navdata/waypoints_parse.js < navdata/waypoints.txt"
@@ -35,7 +37,9 @@
     "bootstrap": "^4.0.0-beta.3",
     "fs": "0.0.1-security",
     "jquery": "^3.2.1",
-    "popper.js": "^1.12.9"
+    "popper.js": "^1.12.9",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
   },
   "build": {
     "appId": "com.andrewward2001.vatron",

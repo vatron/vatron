@@ -1,0 +1,26 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    },
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "quotemark": [true,"single"],
+    "semicolon": [true,"never"],
+    "trailing-comma": [true, "never"],
+    "whitespace": [true, "check-operator", "check-typecast"]
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    }
+  }
+}
