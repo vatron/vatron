@@ -182,8 +182,12 @@ p.atis {
 }
 .menu-bar .nav-item .nav-link.window-control {
   font-size: 11px;
-  line-height: 18px;
-  padding: 5px 17px;
+  padding: 7px 17px 5px 17px;
+}
+.menu-bar .nav-item .nav-link.window-control>svg {
+  width: 10px;
+  height: 10px;
+  shape-rendering: crispEdges;
 }
 
 .menu-bar .nav-item .nav-link:hover {

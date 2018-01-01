@@ -31,13 +31,13 @@ class WindowControls {
       $('#window-controls-darwin').remove()
       $('#controlsNav>ul').append(`
         <li class="nav-item ml-auto">
-          <a class="nav-link window-control" href="#" id="minimize">&#9866;</a>
+          <a class="nav-link window-control" href="#" id="minimize"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#minimize-window"></use></svg></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link window-control" href="#" id="maximize">&#9744;</a>
+          <a class="nav-link window-control" href="#" id="maximize"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#maximize-window"></use></svg></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link window-control" href="#" id="quit">&#9587;</a>
+          <a class="nav-link window-control" href="#" id="quit"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#close-window"></use></svg></a>
         </li>
       `)
     }
