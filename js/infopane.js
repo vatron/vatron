@@ -14,7 +14,7 @@ class InfoPane {
 
     return `
     <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
-      <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9587;</a>
+      <a class="nav-link float-right white" href="#" id="closeFltInfo"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#close-window"></use></svg></a>
       <h4 class="mb-4 mt-1">ATC Info</h4>
       <div class="card mb-3 bg-dark">
         <div class="card-body">
@@ -106,7 +106,7 @@ class InfoPane {
 
     return `
     <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
-      <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9587;</a>
+      <a class="nav-link float-right white" href="#" id="closeFltInfo"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#close-window"></use></svg></a>
       <h4 class="mb-4 mt-1">Flight Info</h4>
       <div class="card mb-3 bg-dark">
         <div class="card-body">
@@ -209,7 +209,7 @@ class InfoPane {
 
     return `
     <div class="col-6 col-md-4 col-xl-3 bg-dark" id="fltInfo">
-      <a class="nav-link float-right white" href="#" id="closeFltInfo">&#9587;</a>
+      <a class="nav-link float-right white" href="#" id="closeFltInfo"><svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#close-window"></use></svg></a>
       <h4 class="mb-4 mt-1">Airport Info</h4>
       <div class="card mb-3 bg-dark">
         <div class="card-body">

@@ -214,3 +214,8 @@ p.atis {
 .dropdown-toggle::after {
   display: none;
 }
+
+#closeFltInfo svg {
+  width: 1rem;
+  height: 1rem;
+}
