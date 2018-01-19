@@ -28,7 +28,7 @@ html, body {
   height: calc(100% - 85px);
 }
 
-nav {
+#menuBarNav {
   -webkit-app-region: drag;
 }
 
