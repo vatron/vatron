@@ -54,7 +54,7 @@ const template = [
     submenu: [
       {
         label: 'Vatron Website',
-        click () { require('electron').shell.openExternal('https://andrewward2001.com/vatron/') }
+        click () { require('electron').shell.openExternal('https://andrewward2001.com/#/vatron/') }
       },
       {
         label: 'Vatron Repository',
