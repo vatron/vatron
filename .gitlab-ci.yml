@@ -10,12 +10,8 @@ before_script:
   # note: yarn is included in the image, so we don't need to install it
   - apt-get update && apt-get -y upgrade
   - apt-get install -y xvfb
-  # electron required dependencies; see https://electronjs.org/docs/development/build-instructions-linux
-  - apt-get install -y build-essential clang libdbus-1-dev libgtk2.0-dev \
-                       libnotify-dev libgnome-keyring-dev libgconf2-dev \
-                       libasound2-dev libcap-dev libcups2-dev libxtst-dev \
-                       libxss1 libnss3-dev gcc-multilib g++-multilib curl \
-                       gperf bison
+  # electron required dependency; see https://electronjs.org/docs/development/build-instructions-linux
+  - apt-get install -y libgtk2.0-dev
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - yarn
