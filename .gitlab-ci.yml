@@ -31,5 +31,5 @@ build:
     - yarn run build-linux
   artifacts:
     paths:
-      dist/latest-linux.yml
-      dist/*.AppImage
+      - dist/latest-linux.yml
+      - dist/*.AppImage
