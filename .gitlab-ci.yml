@@ -1,0 +1,22 @@
+image: node:latest
+
+cache:
+  paths:
+  - node_modules/
+
+before_script:
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update && sudo apt-get install -y yarn
+  - sudo apt-get install -y xvfb
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - yarn
+  
+build_test:
+  stage: test
+  script:
+    - yarn test
+    - yarn run build-linux
+    - yarn-start
+  
