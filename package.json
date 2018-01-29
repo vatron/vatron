@@ -8,6 +8,7 @@
     "start": "electron .",
     "build-win64": "electron-builder --x64",
     "build-darwin": "electron-builder --x64 --mac",
+    "build-linux": "electron-builder --x64 -l -p never",
     "make-navdata": "node navdata/airports_parse.js < navdata/airports.txt && node navdata/waypoints_parse.js < navdata/waypoints.txt"
   },
   "repository": {
@@ -51,6 +52,10 @@
         "squirrel"
       ],
       "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
     },
     "dmg": {
       "artifactName": "${productName}.${version}.${ext}"
