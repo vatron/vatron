@@ -5,6 +5,7 @@ cache:
   - node_modules/
 
 before_script:
+  - uname -v
   - python -V
   # note: yarn is included in the image, so we don't need to install it
   - apt-get update && apt-get -y upgrade
