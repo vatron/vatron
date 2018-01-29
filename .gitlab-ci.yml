@@ -1,20 +1,22 @@
-image: node:latest
+image: node:9.4
 
 cache:
   paths:
   - node_modules/
 
 before_script:
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-  - apt-get update && apt-get install -y yarn
+  # note: yarn is included in the image
+  - apt-get update && apt-get -y upgrade
   - apt-get install -y xvfb
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - yarn
   
+scripts:
+  - build
+  
 build_test:
-  stage: test
+  stage: build
   script:
     - yarn test
     - yarn start
