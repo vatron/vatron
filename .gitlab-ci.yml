@@ -5,6 +5,7 @@ cache:
   - node_modules/
 
 before_script:
+  - python -V
   # note: yarn is included in the image
   - apt-get update && apt-get -y upgrade
   - apt-get install -y xvfb
