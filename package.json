@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "yarn jshint js/ && node test/test.js",
+    "test:electron": "yarn start time=10",
     "start": "electron .",
     "build-win64": "electron-builder --x64",
     "build-darwin": "electron-builder --x64 --mac",

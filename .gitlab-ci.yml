@@ -9,19 +9,27 @@ before_script:
   - python -V
   # note: yarn is included in the image, so we don't need to install it
   # electron required dependencies; see https://electronjs.org/docs/development/build-instructions-linux
-  - apt-get -qq update && apt-get install -qq -y build-essential clang libdbus-1-dev libgtk2.0-dev libnotify-dev libgnome-keyring-dev libgconf2-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev gcc-multilib g++-multilib curl gperf bison xvfb
+  - apt-get -qq update && apt-get install -qq -y build-essential clang libdbus-1-dev libgtk2.0-dev libnotify-dev libgnome-keyring-dev libgconf2-dev libasound2-dev libcap-dev libcups2-dev libxtst-dev libxss1 libnss3-dev gcc-multilib g++-multilib curl gperf bison xvfb icnsutils graphicsmagick
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   - yarn
-  
+
 stages:
+  - test
   - build
-  
-build_test:
-  stage: build
+  - deploy
+
+test:
+  stage: test
   script:
     - yarn test
-    - yarn start
+    - yarn test:electron time=10
+
+build:
+  stage: build
+  script:
     - yarn run build-linux
-    - ls dist
-  
+  artifacts:
+    paths:
+      dist/latest-linux.yml
+      dist/*.AppImage

@@ -7,6 +7,8 @@ const url = require('url')
 const Store = require('./js/store.js')
 const fs = require('fs')
 
+const args = process.argv
+
 // fixes a bug where vatron would error out on first start up
 let settingsPath = app.getPath('userData')
 if(!fs.existsSync(settingsPath))
@@ -49,3 +51,10 @@ app.on('activate', function() {
     createWindow()
   }
 })
+
+if(args[2].indexOf('time') == 0) {
+  let lim = parseInt(args[2].substring(args[2].indexOf('=')+1))
+  console.log(`running test for ${lim}s...`)
+  lim *= 1000
+  setTimeout(() => { console.log('pass!'), app.quit() }, lim)
+}
