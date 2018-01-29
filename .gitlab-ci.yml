@@ -17,6 +17,7 @@ build_test:
   stage: test
   script:
     - yarn test
+    - yarn start
     - yarn run build-linux
-    - yarn-start
+    - ls dist
   
