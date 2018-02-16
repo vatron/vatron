@@ -27,11 +27,12 @@ let
   firMappings
 
 let usingOnlineData = false
-$.getJSON('https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/alias.json', (data) => {
+$.getJSON('https://github.com/vatron/vatron/raw/master/fir_data/alias.json', (data) => {
   firMappings = data
   usingOnlineData = true
   loadData()
 }).fail(() => {
+  console.log('Using offline ATC boundaries')
   firMappings = $.getJSON(path.join(__dirname, '/fir_data/alias.json'), (data) => {
     firMappings = data
     loadData()
@@ -197,7 +198,7 @@ function placeMarker(client) {
     let nameSplit = client.callsign.split('_')
     if(firMappings !== 'undefined' && firMappings.hasOwnProperty(nameSplit[0])) {
       let firDataUrl = path.join(__dirname, `/fir_data/${firMappings[nameSplit[0]]}.json`)
-      if(usingOnlineData) firDataUrl = `https://gitlab.com/andrewward2001/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
+      if(usingOnlineData) firDataUrl = `https://github.com/vatron/vatron/raw/master/fir_data/${firMappings[nameSplit[0]]}.json`
       $.getJSON(firDataUrl, (json) => {
         json.features[0].properties.callsign = client.callsign
         Map.data.addGeoJson(json)
