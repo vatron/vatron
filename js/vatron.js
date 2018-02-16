@@ -71,6 +71,8 @@ $(document).ready(() => {
   $.getJSON(path.join(__dirname, '/themes/' + settings.get('mapTheme') + '.json'), (data) => {
     Map.setOptions(data)
   })
+
+  svgs.setTheme(settings.get('mapTheme'))
 });
 
 // change markers based on zoom level
