@@ -49,8 +49,8 @@ let friendsList = friends.list
 
 let svgs = new SVGs()
 let windowControls = new WindowControls($)
-let settings = new Settings()
-settings = new Store({configName: 'settings'})
+let mSettings = new Settings()
+let settings = new Store({configName: 'settings'})
 
 // wait for the application to load before trying to do things
 $(document).ready(() => {
