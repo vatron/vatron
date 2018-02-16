@@ -31,20 +31,27 @@ class WindowControls {
       if(!maxed) {
         maxed = true
         remote.getCurrentWindow().maximize()
-        if(process.platform != 'darwin') {
-          $('#maximize').html(`<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#restore-window"></use></svg>`)
-        }
+
       } else {
         maxed = false
         remote.getCurrentWindow().unmaximize()
-        if(process.platform != 'darwin') {
-          $('#maximize').html(`<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#maximize-window"></use></svg>`)
-        }
       }
     })
 
     $(document).on('click', '#minimize', () => {
       remote.getCurrentWindow().minimize()
+    })
+
+    remote.getCurrentWindow().on('maximize', () => {
+      if(process.platform != 'darwin') {
+        $('#maximize').html(`<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#restore-window"></use></svg>`)
+      }
+    })
+
+    remote.getCurrentWindow().on('unmaximize', () => {
+      if(process.platform != 'darwin') {
+        $('#maximize').html(`<svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="./icons/windows.svg#maximize-window"></use></svg>`)
+      }
     })
   }
 }
