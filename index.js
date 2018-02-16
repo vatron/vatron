@@ -18,14 +18,26 @@ const settings = new Store({
   configName: 'settings',
   defaults: {
     dataRefresh: 60000,
-    mapTheme: 'dark'
+    mapTheme: 'dark',
+    window: {
+      width: 1010,
+      height: 700,
+      x: 100,
+      y: 100,
+
+      // non-dynamic prefs
+      minWidth: 1010,
+      minHeight: 56,
+      frame: false,
+      backgroundColor: '#343a40'
+    }
   }
 })
 
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({width: 1010, height: 700, minWidth: 1010, minHeight: 56, frame: false, backgroundColor: '#343a40'})
+  mainWindow = new BrowserWindow(settings.get('window'))
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -33,7 +45,17 @@ function createWindow() {
     slashes: true
   }))
 
-  mainWindow.on('closed', function() {
+  mainWindow.on('close', () => {
+    let windowPrefs = settings.get('window'),
+        bounds = mainWindow.getBounds()
+    windowPrefs.x = bounds.x
+    windowPrefs.y = bounds.y
+    windowPrefs.width = bounds.width
+    windowPrefs.height = bounds.height
+    settings.set('window', windowPrefs)
+  })
+
+  mainWindow.on('closed', () => {
     mainWindow = null
   })
 
