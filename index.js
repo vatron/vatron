@@ -18,26 +18,30 @@ const settings = new Store({
   configName: 'settings',
   defaults: {
     dataRefresh: 60000,
-    mapTheme: 'dark',
-    window: {
-      width: 1010,
-      height: 700,
-      x: 100,
-      y: 100,
+    mapTheme: 'dark'
+  }
+})
 
-      // non-dynamic prefs
-      minWidth: 1010,
-      minHeight: 56,
-      frame: false,
-      backgroundColor: '#343a40'
-    }
+const windowSettings = new Store({
+  configName: 'window',
+  defaults: {
+    width: 1010,
+    height: 700,
+    x: 100,
+    y: 100,
+
+    // non-dynamic prefs
+    minWidth: 1010,
+    minHeight: 56,
+    frame: false,
+    backgroundColor: '#343a40'
   }
 })
 
 let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow(settings.get('window'))
+  mainWindow = new BrowserWindow(windowSettings.data)
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -46,13 +50,11 @@ function createWindow() {
   }))
 
   mainWindow.on('close', () => {
-    let windowPrefs = settings.get('window'),
-        bounds = mainWindow.getBounds()
-    windowPrefs.x = bounds.x
-    windowPrefs.y = bounds.y
-    windowPrefs.width = bounds.width
-    windowPrefs.height = bounds.height
-    settings.set('window', windowPrefs)
+    let bounds = mainWindow.getBounds()
+    windowSettings.set('x', bounds.x)
+    windowSettings.set('y', bounds.y)
+    windowSettings.set('width', bounds.width)
+    windowSettings.set('height', bounds.height)
   })
 
   mainWindow.on('closed', () => {
