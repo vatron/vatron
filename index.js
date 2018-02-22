@@ -77,8 +77,15 @@ app.on('activate', function() {
 })
 
 if(args.length > 2 && args[2].indexOf('time') == 0) {
-  let lim = parseInt(args[2].substring(args[2].indexOf('=')+1))
-  console.log(`running test for ${lim}s...`)
-  lim *= 1000
-  setTimeout(() => { console.log('pass!'), app.quit() }, lim)
+  if(args[2].substring(args[2].indexOf('=')+1) === 'quick') {
+    app.on('web-contents-created', () => {
+      console.log('pass!')
+      app.quit()
+    })
+  } else {
+    let lim = parseInt(args[2].substring(args[2].indexOf('=')+1))
+    console.log(`running test for ${lim}s...`)
+    lim *= 1000
+    setTimeout(() => { console.log('pass!'), app.quit() }, lim)
+  }
 }
