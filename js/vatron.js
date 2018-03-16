@@ -50,7 +50,7 @@ let friendsList = friends.list
 
 let svgs = new SVGs()
 let windowControls = new WindowControls($)
-let mSettings = new Settings()
+new Settings()
 let settings = new Store({configName: 'settings'})
 
 // wait for the application to load before trying to do things
