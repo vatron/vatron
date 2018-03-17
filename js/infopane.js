@@ -2,7 +2,7 @@
 const SVGs = require('./svgs.js')
 var svgs = new SVGs()
 
-class InfoPane {
+module.exports = class InfoPane {
   buildATC(c, addFriendStr) {
     let name = c.name.split(' ')
     /*jshint -W100*/
@@ -33,7 +33,7 @@ class InfoPane {
             <tr>
               <td colspan="2">
                 <span class="text-muted">Time online</span><br>
-                <span>Online since ${c.timeLogon.substring(8, 10) + ':' + c.timeLogon.substring(10, 12)}</span>
+                <span>Online for ${timeOnline(c.timeLogon)}</span>
               </td>
             </tr>
           </tbody>
@@ -236,4 +236,7 @@ class InfoPane {
   }
 }
 
-module.exports = InfoPane
+function timeOnline(time) {
+  let now = new Date()
+  return now.getUTCHours() - time.substring(8, 10) + ' hrs, ' +  (now.getUTCMinutes() - time.substring(10, 12)) + ' min'
+}
