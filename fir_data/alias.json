@@ -1,6 +1,12 @@
 {
+  "_comment": "Austria",
+  "LOVV": "lovv",
+
   "_comment": "Belgium",
   "EBBU": "ebbu",
+
+  "_comment": "Bosnia and Herzegovina",
+  "LQSB": "lqsb",
 
   "_comment": "Canada",
   "CZEG": "czeg",
@@ -11,6 +17,12 @@
   "CZWG": "czwg",
   "CZYZ": "czyz",
 
+  "_comment": "Croatia",
+  "LDZO": "ldzo",
+
+  "_comment": "Czech Republic",
+  "LKAA": "lkaa",
+
   "_comment": "Denmark",
   "EKDK": "ekdk",
 
@@ -20,10 +32,20 @@
   "_comment": "Finland",
   "EFIN": "efin",
 
+  "_comment": "France",
+  "LFBB": "lfbb",
+  "LFEE": "lfee",
+  "LFFF": "lfff",
+  "LFMM": "lfmm",
+  "LFRR": "lfrr",
+
   "_comment": "Germany",
   "EDWW": "edww",
   "EDGG": "edgg",
   "EDMM": "edmm",
+
+  "_comment": "Iceland",
+  "LHCC": "lhcc",
 
   "_comment": "Iceland",
   "BIRD": "bird",
@@ -31,11 +53,22 @@
   "_comment": "Ireland",
   "EISN": "eisn",
 
+  "_comment": "Italy",
+  "LIBB": "libb",
+  "LIMM": "limm",
+  "LIRR": "lirr",
+
+  "_comment": "Kosovo, Montenegro, and Serbia",
+  "LYBA": "lyba",
+
   "_comment": "Lithuania",
   "EYVL": "eyvl",
 
   "_comment": "Latvia",
-  "evrr": "evrr",
+  "EVRR": "evrr",
+
+  "_comment": "Latvia",
+  "LMMM": "lmmm",
 
   "_comment": "The Netherlands",
   "EHAA": "ehaa",
@@ -44,9 +77,29 @@
   "ENOB": "enob",
   "ENOR": "enor",
 
+  "_comment": "Poland",
+  "EPWW": "epww",
+
+  "_comment": "Portugal",
+  "LPPC": "lppc",
+
+  "_comment": "Slovakia",
+  "LZBB": "lzbb",
+
+  "_comment": "Slovenia",
+  "LJLA": "ljla",
+
+  "_comment": "Spain",
+  "GCCC": "gccc",
+  "LECM": "lecm",
+  "LEBL": "lebl",
+
   "_comment": "Sweden",
   "ESAA": "esaa",
   "ESOS": "esaa",
+
+  "_comment": "Switzerland",
+  "LSAS": "lsas",
 
   "_comment": "United Kingdom",
   "EGTT": "egtt",
