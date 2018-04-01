@@ -52,7 +52,7 @@ app.on('activate', function() {
   }
 })
 
-if(args[2].indexOf('time') == 0) {
+if(args.length > 2 && args[2].indexOf('time') == 0) {
   let lim = parseInt(args[2].substring(args[2].indexOf('=')+1))
   console.log(`running test for ${lim}s...`)
   lim *= 1000
