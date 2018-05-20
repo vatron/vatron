@@ -2,7 +2,7 @@ version: 0.3.0.{build}
 
 cache:
   - node_modules
-  - %LOCALAPPDATA%\\Yarn
+  - "%LOCALAPPDATA%\\Yarn"
 
 environment:
   GH_TOKEN:
