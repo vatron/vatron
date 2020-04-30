@@ -635,9 +635,9 @@ electron-publish@19.50.0:
     fs-extra-p "^4.5.0"
     mime "^2.1.0"
 
-electron@1.7.13:
-  version "1.7.13"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.7.13.tgz#10851baec77d686d95812f34425c17e48ac1413f"
+electron@1.7.15:
+  version "1.7.15"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.7.15.tgz#1234fa3645b6c09017815515833a86c26989ef49"
   dependencies:
     "@types/node" "^7.0.18"
     electron-download "^3.0.1"
@@ -1046,9 +1046,9 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-jquery@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+jquery@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
 
 js-yaml@^3.10.0:
   version "3.10.0"
